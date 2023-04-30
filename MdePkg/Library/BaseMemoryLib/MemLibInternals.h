@@ -32,13 +32,13 @@
   @return Destination
 
 **/
-_Checked VOID *
+VOID *
 EFIAPI
 InternalMemCopyMem (
-  OUT     VOID        *DestinationBuffer : itype(_Array_ptr<VOID>) byte_count(Length),
-  IN      CONST VOID  *SourceBuffer : itype(_Array_ptr<CONST VOID>) byte_count(Length),
+  OUT     VOID        *DestinationBuffer,
+  IN      CONST VOID  *SourceBuffer,
   IN      UINTN       Length
-  ) : itype(_Array_ptr<VOID>);
+  );
 
 /**
   Set Buffer to Value for Size bytes.

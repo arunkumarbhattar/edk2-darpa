@@ -675,15 +675,42 @@ EFI_STATUS
   OUT    VOID                        *Data           OPTIONAL
   );
 
+/**
+  Returns the value of am access variable.
+
+  @param[in]       VariableName  A Null-terminated string that is the name of the vendor's
+                                 variable.
+  @param[in]       VendorGuid    A unique identifier for the vendor.
+  @param[out]      Attributes    If not NULL, a pointer to the memory location to return the
+                                 attributes bitmask for the variable.
+  @param[in]       AccessKey     Pointer to Access Key to use to edit/create variable 
+  @param[in, out]  DataSize      On input, the size in bytes of the return Data buffer.
+                                 On output the size of data returned in Data.
+  @param[out]      Data          The buffer to return the contents of the variable. May be NULL
+                                 with a zero DataSize in order to determine the size buffer needed.
+
+  @retval EFI_SUCCESS            The function completed successfully.
+  @retval EFI_NOT_FOUND          The variable was not found.
+  @retval EFI_BUFFER_TOO_SMALL   The DataSize is too small for the result.
+  @retval EFI_INVALID_PARAMETER  AccessKey is NULL or invalid.
+  @retval EFI_INVALID_PARAMETER  VariableName is NULL.
+  @retval EFI_INVALID_PARAMETER  VendorGuid is NULL.
+  @retval EFI_INVALID_PARAMETER  DataSize is NULL.
+  @retval EFI_INVALID_PARAMETER  The DataSize is not too small and Data is NULL.
+  @retval EFI_DEVICE_ERROR       The variable could not be retrieved due to a hardware error.
+  @retval EFI_SECURITY_VIOLATION The variable could not be retrieved due to an authentication failure.
+
+**/
 typedef
-_Ptr<EFI_STATUS
-  (
-  IN     _Nt_array_ptr<CHAR16>       VariableName,
-  IN     _Ptr<EFI_GUID>              VendorGuid,
-  OUT    _Ptr<UINT32>                Attributes     OPTIONAL,
-  IN OUT _Ptr<UINTN>                 DataSize,
-  OUT    _Array_ptr<VOID>            Data           OPTIONAL
-  )> EFI_GET_VARIABLE_C;
+EFI_STATUS
+(EFIAPI *EFI_GET_ACCESS_VARIABLE)(
+  IN     CHAR16                      *VariableName,
+  IN     EFI_GUID                    *VendorGuid,
+  OUT    UINT32                      *Attributes     OPTIONAL,
+  IN     DEMO1_ACCESS_KEY           *AccessKey,
+  IN OUT UINTN                       *DataSize,
+  OUT    VOID                        *Data           OPTIONAL
+  );
 
 /**
   Enumerates the current variable names.
@@ -763,16 +790,51 @@ EFI_STATUS
   IN  VOID                         *Data
   );
 
-typedef
-_Ptr<EFI_STATUS
- (
-  IN  _Nt_array_ptr<CHAR16>        VariableName,
-  IN  _Ptr<EFI_GUID>               VendorGuid,
-  IN  UINT32                       Attributes,
-  IN  UINTN                        DataSize,
-  IN  _Array_ptr<VOID>             Data : byte_count(DataSize)
-  )> EFI_SET_VARIABLE_C;
+/**
+  Sets the value of a access variable.
 
+  @param[in]  VariableName       A Null-terminated string that is the name of the vendor's variable.
+                                 Each VariableName is unique for each VendorGuid. VariableName must
+                                 contain 1 or more characters. If VariableName is an empty string,
+                                 then EFI_INVALID_PARAMETER is returned.
+  @param[in]  VendorGuid         A unique identifier for the vendor.
+  @param[in]  AccessKey          Pointer to Access Key to use to edit/create variable
+  @param[in]  Attributes         Attributes bitmask to set for the variable.
+  @param[in]  DataSize           The size in bytes of the Data buffer. Unless the EFI_VARIABLE_APPEND_WRITE or
+                                 EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACCESS attribute is set, a size of zero
+                                 causes the variable to be deleted. When the EFI_VARIABLE_APPEND_WRITE attribute is
+                                 set, then a SetVariable() call with a DataSize of zero will not cause any change to
+                                 the variable value (the timestamp associated with the variable may be updated however
+                                 even if no new data value is provided,see the description of the
+                                 EFI_VARIABLE_AUTHENTICATION_2 descriptor below. In this case the DataSize will not
+                                 be zero since the EFI_VARIABLE_AUTHENTICATION_2 descriptor will be populated).
+  @param[in]  Data               The contents for the variable.
+
+  @retval EFI_SUCCESS            The firmware has successfully stored the variable and its data as
+                                 defined by the Attributes.
+  @retval EFI_INVALID_PARAMETER  An invalid combination of attribute bits, name, access key, and GUID was supplied, or the
+                                 DataSize exceeds the maximum allowed.
+  @retval EFI_INVALID_PARAMETER  VariableName is an empty string.
+  @retval EFI_OUT_OF_RESOURCES   Not enough storage is available to hold the variable and its data.
+  @retval EFI_DEVICE_ERROR       The variable could not be retrieved due to a hardware error.
+  @retval EFI_WRITE_PROTECTED    The variable in question is read-only.
+  @retval EFI_WRITE_PROTECTED    The variable in question cannot be deleted.
+  @retval EFI_SECURITY_VIOLATION The variable could not be written due to EFI_VARIABLE_TIME_BASED_AUTHENTICATED_WRITE_ACESS being set,
+                                 but the AuthInfo does NOT pass the validation check carried out by the firmware.
+
+  @retval EFI_NOT_FOUND          The variable trying to be updated or deleted was not found.
+
+**/
+typedef
+EFI_STATUS
+(EFIAPI *EFI_SET_ACCESS_VARIABLE)(
+  IN  CHAR16                       *VariableName,
+  IN  EFI_GUID                     *VendorGuid,
+  IN  UINT32                       Attributes,
+  IN  DEMO1_ACCESS_KEY             *AccessKey,
+  IN  UINTN                        DataSize,
+  IN  VOID                         *Data
+  );
 
 ///
 /// This provides the capabilities of the
@@ -1856,6 +1918,12 @@ typedef struct {
   EFI_GET_VARIABLE                  GetVariable;
   EFI_GET_NEXT_VARIABLE_NAME        GetNextVariableName;
   EFI_SET_VARIABLE                  SetVariable;
+
+  //
+  // Access Variable Services
+  //
+  EFI_GET_ACCESS_VARIABLE           GetAccessVariable;
+  EFI_SET_ACCESS_VARIABLE           SetAccessVariable;
 
   //
   // Miscellaneous Services

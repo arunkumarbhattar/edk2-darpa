@@ -17,7 +17,10 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 //
 // Basic data type definitions introduced in UEFI.
 //
-
+///
+/// Access key for Access Variables - DEMO1.
+///
+typedef _DEMO1_ACCESS_KEY DEMO1_ACCESS_KEY;
 ///
 /// 128-bit buffer containing a unique identifier value.
 ///

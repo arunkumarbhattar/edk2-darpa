@@ -33,10 +33,10 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
 VOID *
 EFIAPI
 CopyMem (
-  OUT VOID       *DestinationBuffer : itype(_Array_ptr<VOID>),
-  IN CONST VOID  *SourceBuffer : itype(_Array_ptr<CONST VOID>) byte_count(Length),
+  OUT VOID       *DestinationBuffer,
+  IN CONST VOID  *SourceBuffer,
   IN UINTN       Length
-  ) : itype(_Array_ptr<VOID>);
+  );
 
 /**
   Fills a target buffer with a byte value, and returns the target buffer.

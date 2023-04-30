@@ -126,6 +126,7 @@
   SortLib|MdeModulePkg/Library/BaseSortLib/BaseSortLib.inf
   ShellLib|ShellPkg/Library/UefiShellLib/UefiShellLib.inf
   FileHandleLib|MdePkg/Library/UefiFileHandleLib/UefiFileHandleLib.inf
+  RngLib|MdePkg/Library/BaseRngLib/BaseRngLib.inf # DEMO1
 
 !if $(SECURE_BOOT_ENABLE) == TRUE
   RngLib|MdePkg/Library/BaseRngLibTimerLib/BaseRngLibTimerLib.inf
@@ -134,6 +135,7 @@
   PlatformSecureLib|SecurityPkg/Library/PlatformSecureLibNull/PlatformSecureLibNull.inf
   AuthVariableLib|SecurityPkg/Library/AuthVariableLib/AuthVariableLib.inf
   SecureBootVariableLib|SecurityPkg/Library/SecureBootVariableLib/SecureBootVariableLib.inf
+  PlatformPKProtectionLib|SecurityPkg/Library/PlatformPKProtectionLibVarPolicy/PlatformPKProtectionLibVarPolicy.inf
   SecureBootVariableProvisionLib|SecurityPkg/Library/SecureBootVariableProvisionLib/SecureBootVariableProvisionLib.inf
 !else
   AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
@@ -375,6 +377,16 @@
   EmulatorPkg/PlatformSmbiosDxe/PlatformSmbiosDxe.inf
   EmulatorPkg/TimerDxe/Timer.inf
 
+  ### DEMO1 COMPONENTS
+  EmulatorPkg/Demo1_Variable/Demo1_Variable.inf
+  EmulatorPkg/Demo1_Access_Key/Demo1_Access_Key.inf
+  EmulatorPkg/Demo1_Alice/Demo1_Alice.inf
+  EmulatorPkg/Demo1_Bob/Demo1_Bob.inf
+  ### DEMO1 Random Number Generator
+  SecurityPkg/RandomNumberGenerator/RngDxe/RngDxe.inf
+  ### DEMO1 Example App
+  EmulatorPkg/Demo1_Example_App/Demo1_Example_App.inf
+
 !if $(SECURE_BOOT_ENABLE) == TRUE
   SecurityPkg/VariableAuthenticated/SecureBootConfigDxe/SecureBootConfigDxe.inf
 !endif
@@ -408,6 +420,7 @@
       NULL|MdeModulePkg/Library/BootMaintenanceManagerUiLib/BootMaintenanceManagerUiLib.inf
   }
   MdeModulePkg/Application/BootManagerMenuApp/BootManagerMenuApp.inf
+
 
   MdeModulePkg/Universal/DevicePathDxe/DevicePathDxe.inf
   #{

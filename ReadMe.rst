@@ -1,15 +1,4 @@
 ==============
-DARPA HARDEN 
-==============
-For HARDEN related instructions check the following README https://github.com/BreakingBoot/edk2-vulnerable/tree/main/MdeModulePkg/Application/SmmHarden
-
-
-
-
-
-
-
-==============
 EDK II Project
 ==============
 

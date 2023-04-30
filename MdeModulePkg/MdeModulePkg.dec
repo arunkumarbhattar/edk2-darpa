@@ -159,11 +159,6 @@
   VariableFlashInfoLib|Include/Library/VariableFlashInfoLib.h
 
 [Guids]
-
-  gEfiSmmHardenBootServiceGuid        = { 0xccee1234, 0xce70, 0x4bb0, { 0x98, 0x5d, 0x5e, 0x7b, 0x14, 0x0d, 0xe4, 0xd2 }}
-  gEfiSmmHardenVariableManagerGuid    = { 0x82fbc314, 0xf00d, 0xacd0, { 0xf8, 0x89, 0x45, 0x81, 0x17, 0x2d, 0xa4, 0xd3 }}
-  gEfiSmmHardenExampleVariableGuid    = { 0xf7327a91, 0xE4D2, 0x4A93, { 0xB2, 0x42, 0x51, 0xf8, 0x3F, 0x02, 0x58, 0x4B }}
-
   ## MdeModule package token space guid
   # Include/Guid/MdeModulePkgTokenSpace.h
   gEfiMdeModulePkgTokenSpaceGuid       = { 0xA1AFF049, 0xFDEB, 0x442a, { 0xB3, 0x20, 0x13, 0xAB, 0x4C, 0xB7, 0x2B, 0xBC }}
@@ -514,12 +509,14 @@
   ## Include/Ppi/NvmExpressPassThru.h
   gEdkiiPeiNvmExpressPassThruPpiGuid    = { 0x6af31b2c, 0x3be, 0x46c1, { 0xb1, 0x2d, 0xea, 0x4a, 0x36, 0xdf, 0xa7, 0x4c } }
 
+  ## Include/Ppi/PciDevice.h
+  gEdkiiPeiPciDevicePpiGuid                 = { 0x1597ab4f, 0xd542, 0x4efe, { 0x9a, 0xf7, 0xb2, 0x44, 0xec, 0x54, 0x4c, 0x0b } }
+
   ## Include/Ppi/CapsuleOnDisk.h
   gEdkiiPeiCapsuleOnDiskPpiGuid             = { 0x71a9ea61, 0x5a35, 0x4a5d, { 0xac, 0xef, 0x9c, 0xf8, 0x6d, 0x6d, 0x67, 0xe0 } }
   gEdkiiPeiBootInCapsuleOnDiskModePpiGuid   = { 0xb08a11e4, 0xe2b7, 0x4b75, { 0xb5, 0x15, 0xaf, 0x61, 0x6, 0x68, 0xbf, 0xd1  } }
 
 [Protocols]
-  gExample1_Driver_LockboxProtocolGuid = { 0xf3aae06f, 0x7716, 0x4722,{ 0xb6, 0x26, 0x02, 0x64, 0x79, 0xb9, 0xfa, 0x57 } }
   ## Load File protocol provides capability to load and unload EFI image into memory and execute it.
   #  Include/Protocol/LoadPe32Image.h
   #  This protocol is deprecated. Native EDKII module should NOT use this protocol to load/unload image.
@@ -1576,6 +1573,10 @@
   ## Indicates the default timeout value for SD/MMC Host Controller operations in microseconds.
   # @Prompt SD/MMC Host Controller Operations Timeout (us).
   gEfiMdeModulePkgTokenSpaceGuid.PcdSdMmcGenericTimeoutValue|1000000|UINT32|0x00000031
+
+  ## The Retry Count of AHCI command if there is a failure
+  # @Prompt The value of Retry Count,  Default value is 5.
+  gEfiMdeModulePkgTokenSpaceGuid.PcdAhciCommandRetryCount|5|UINT32|0x00000032
 
 [PcdsPatchableInModule, PcdsDynamic, PcdsDynamicEx]
   ## This PCD defines the Console output row. The default value is 25 according to UEFI spec.

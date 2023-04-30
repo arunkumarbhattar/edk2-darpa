@@ -90,6 +90,21 @@ typedef struct {
   BOOLEAN            Volatile;
 } VARIABLE_POINTER_TRACK;
 
+// DEMO1
+typedef struct {
+  ACCESS_VARIABLE_HEADER    *CurrPtr;
+  //
+  // If both ADDED and IN_DELETED_TRANSITION variable are present,
+  // InDeletedTransitionPtr will point to the IN_DELETED_TRANSITION one.
+  // Otherwise, CurrPtr will point to the ADDED or IN_DELETED_TRANSITION one,
+  // and InDeletedTransitionPtr will be NULL at the same time.
+  //
+  ACCESS_VARIABLE_HEADER    *InDeletedTransitionPtr;
+  ACCESS_VARIABLE_HEADER    *EndPtr;
+  ACCESS_VARIABLE_HEADER    *StartPtr;
+  BOOLEAN            Volatile;
+} ACCESS_VARIABLE_POINTER_TRACK;
+
 typedef struct {
   EFI_PHYSICAL_ADDRESS              HobVariableBase;
   EFI_PHYSICAL_ADDRESS              VolatileVariableBase;

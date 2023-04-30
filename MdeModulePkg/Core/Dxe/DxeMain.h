@@ -2145,6 +2145,30 @@ CoreEfiNotAvailableYetArg5 (
   );
 
 /**
+  Place holder function until all the Boot Services and Runtime Services are available.
+
+  @param  Arg1                   Undefined
+  @param  Arg2                   Undefined
+  @param  Arg3                   Undefined
+  @param  Arg4                   Undefined
+  @param  Arg5                   Undefined
+  @param  Arg6                   Undefined
+
+  @return EFI_NOT_AVAILABLE_YET
+
+**/
+EFI_STATUS
+EFIAPI
+CoreEfiNotAvailableYetArg6 (
+  UINTN  Arg1,
+  UINTN  Arg2,
+  UINTN  Arg3,
+  UINTN  Arg4,
+  UINTN  Arg5,
+  UINTN  Arg6
+  );
+
+/**
   Given a compressed source buffer, this function retrieves the size of the
   uncompressed buffer and the size of the scratch buffer required to decompress
   the compressed source buffer.

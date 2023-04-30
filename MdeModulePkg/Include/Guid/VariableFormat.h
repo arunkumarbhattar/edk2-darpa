@@ -149,6 +149,41 @@ typedef struct {
 } VARIABLE_HEADER;
 
 ///
+/// Single Access Variable Data Header Structure. DEMO1
+///
+typedef struct {
+  ///
+  /// Variable Data Start Flag.
+  ///
+  UINT16      StartId;
+  ///
+  /// Variable State defined above.
+  ///
+  UINT8       State;
+  UINT8       Reserved;
+  ///
+  /// Attributes of variable defined in UEFI specification.
+  ///
+  UINT32      Attributes;
+  ///
+  /// Size of variable null-terminated Unicode string name.
+  ///
+  UINT32      NameSize;
+  ///
+  /// Size of the variable data without this header.
+  ///
+  UINT32      DataSize;
+  ///
+  /// A unique identifier for the vendor that produces and consumes this varaible.
+  ///
+  EFI_GUID    VendorGuid;
+  ///
+  /// Size of the variable data without this header.
+  ///
+  DEMO1_ACCESS_KEY accesskeylist;
+} ACCESS_VARIABLE_HEADER;
+
+///
 /// Single Authenticated Variable Data Header Structure.
 ///
 typedef struct {

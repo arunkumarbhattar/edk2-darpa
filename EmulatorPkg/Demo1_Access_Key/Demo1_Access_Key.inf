@@ -1,0 +1,60 @@
+## @file
+# 
+# Module Name:
+# 
+#   Demo1_Access_Key.inf
+# 
+# Abstract:
+# 
+#   Provides protocol for generating/validating an access key
+# 
+# Revision History: 0.1
+# 
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Demo1_Access_Key
+  FILE_GUID                      = 189f90a4-440a-48ac-84aa-f5882ca2c1ee
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = Demo1AccessKeyInit
+  UNLOAD_IMAGE                   = Demo1AccessKeyUnload
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 EBC
+#
+
+[Sources]
+  Demo1_Access_Key.c
+  Demo1_Access_Key.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  EmulatorPkg/EmulatorPkg.dec
+  SecurityPkg/SecurityPkg.dec
+  CryptoPkg/CryptoPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  UefiLib
+  RngLib
+
+[Guids]
+
+[Protocols]
+  gEfiRngProtocolGuid                      ## CONSUMES
+  gDemo1AccessKeyProtocolGuid              ## PRODUCES
+  gDemo1AccessKeyReadyToLockGuid           ## PRODUCES
+
+[Depex]
+  gEfiCpuArchProtocolGuid

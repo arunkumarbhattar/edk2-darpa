@@ -218,6 +218,13 @@ typedef struct {
 } GUID;
 
 ///
+/// 16-byte buffer. Access key - DEMO1.
+///
+typedef struct {
+  UINTN access_key_store[2];
+} _DEMO1_ACCESS_KEY;
+
+///
 /// 4-byte buffer. An IPv4 internet protocol address.
 ///
 typedef struct {

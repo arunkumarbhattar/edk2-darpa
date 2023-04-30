@@ -308,7 +308,10 @@ GopQueryMode (
 {
   EFI_GRAPHICS_OUTPUT_MODE_INFORMATION  *GopModeInfo;
 
-  if (ModeNumber >= This->Mode->MaxMode) {
+  if ((Info == NULL) ||
+      (SizeOfInfo == NULL) ||
+      (ModeNumber >= This->Mode->MaxMode))
+  {
     return EFI_INVALID_PARAMETER;
   }
 
@@ -509,7 +512,7 @@ GopSetMode (
   // Populate Mode and ModeInfo (mutable fields only).
   //
   VgpuGop->GopMode.Mode = ModeNumber;
-  VgpuGop->GopModeInfo  = *GopModeInfo;
+  CopyMem (&VgpuGop->GopModeInfo, GopModeInfo, sizeof VgpuGop->GopModeInfo);
   FreePool (GopModeInfo);
   return EFI_SUCCESS;
 

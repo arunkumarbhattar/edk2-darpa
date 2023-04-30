@@ -1,7 +1,7 @@
 /** @file
   DXE Core Main Entry Point
 
-Copyright (c) 2006 - 2018, Intel Corporation. All rights reserved.<BR>
+Copyright (c) 2006 - 2022, Intel Corporation. All rights reserved.<BR>
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
@@ -159,6 +159,8 @@ EFI_RUNTIME_SERVICES  mEfiRuntimeServicesTableTemplate = {
   (EFI_GET_VARIABLE)CoreEfiNotAvailableYetArg5,                   // GetVariable
   (EFI_GET_NEXT_VARIABLE_NAME)CoreEfiNotAvailableYetArg3,         // GetNextVariableName
   (EFI_SET_VARIABLE)CoreEfiNotAvailableYetArg5,                   // SetVariable
+  (EFI_GET_ACCESS_VARIABLE)CoreEfiNotAvailableYetArg6,            // GetAccessVariable
+  (EFI_SET_ACCESS_VARIABLE)CoreEfiNotAvailableYetArg6,            // SetAccessVariable 
   (EFI_GET_NEXT_HIGH_MONO_COUNT)CoreEfiNotAvailableYetArg1,       // GetNextHighMonotonicCount
   (EFI_RESET_SYSTEM)CoreEfiNotAvailableYetArg4,                   // ResetSystem
   (EFI_UPDATE_CAPSULE)CoreEfiNotAvailableYetArg3,                 // UpdateCapsule
@@ -253,8 +255,16 @@ DxeMain (
     VectorInfoList = (EFI_VECTOR_HANDOFF_INFO *)(GET_GUID_HOB_DATA (GuidHob));
   }
 
-  Status = InitializeCpuExceptionHandlersEx (VectorInfoList, NULL);
+  Status = InitializeCpuExceptionHandlers (VectorInfoList);
   ASSERT_EFI_ERROR (Status);
+
+  //
+  // Setup Stack Guard
+  //
+  if (PcdGetBool (PcdCpuStackGuard)) {
+    Status = InitializeSeparateExceptionStacks (NULL, NULL);
+    ASSERT_EFI_ERROR (Status);
+  }
 
   //
   // Initialize Debug Agent to support source level debug in DXE phase
@@ -700,6 +710,39 @@ CoreEfiNotAvailableYetArg5 (
   UINTN  Arg3,
   UINTN  Arg4,
   UINTN  Arg5
+  )
+{
+  //
+  // This function should never be executed.  If it does, then the architectural protocols
+  // have not been designed correctly.  The CpuBreakpoint () is commented out for now until the
+  // DXE Core and all the Architectural Protocols are complete.
+  //
+
+  return EFI_NOT_AVAILABLE_YET;
+}
+
+/**
+  Place holder function until all the Boot Services and Runtime Services are available.
+
+  @param  Arg1                   Undefined
+  @param  Arg2                   Undefined
+  @param  Arg3                   Undefined
+  @param  Arg4                   Undefined
+  @param  Arg5                   Undefined
+  @param  Arg6                   Undefined
+
+  @return EFI_NOT_AVAILABLE_YET
+
+**/
+EFI_STATUS
+EFIAPI
+CoreEfiNotAvailableYetArg6 (
+  UINTN  Arg1,
+  UINTN  Arg2,
+  UINTN  Arg3,
+  UINTN  Arg4,
+  UINTN  Arg5,
+  UINTN  Arg6
   )
 {
   //

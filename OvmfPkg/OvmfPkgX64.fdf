@@ -324,17 +324,25 @@ INF  FatPkg/EnhancedFatDxe/Fat.inf
 INF  MdeModulePkg/Universal/Disk/UdfDxe/UdfDxe.inf
 INF  OvmfPkg/VirtioFsDxe/VirtioFsDxe.inf
 
-!if $(TOOL_CHAIN_TAG) != "XCODE5"
+!if $(BUILD_SHELL) == TRUE && $(TOOL_CHAIN_TAG) != "XCODE5"
 INF  ShellPkg/DynamicCommand/TftpDynamicCommand/TftpDynamicCommand.inf
 INF  ShellPkg/DynamicCommand/HttpDynamicCommand/HttpDynamicCommand.inf
 INF  OvmfPkg/LinuxInitrdDynamicShellCommand/LinuxInitrdDynamicShellCommand.inf
 !endif
+!if $(BUILD_SHELL) == TRUE
 INF  ShellPkg/Application/Shell/Shell.inf
+!endif
 
 INF MdeModulePkg/Logo/LogoDxe.inf
 
 INF OvmfPkg/TdxDxe/TdxDxe.inf
 
+#### DEMO1 DRIVERS
+INF  EmulatorPkg/Demo1_Access_Key/Demo1_Access_Key.inf
+INF  EmulatorPkg/Demo1_Variable/Demo1_Variable.inf
+INF  SecurityPkg/RandomNumberGenerator/RngDxe/RngDxe.inf
+INF  EmulatorPkg/Demo1_Alice/Demo1_Alice.inf
+INF  EmulatorPkg/Demo1_Bob/Demo1_Bob.inf
 #
 # Network modules
 #
@@ -380,7 +388,6 @@ INF  OvmfPkg/CpuHotplugSmm/CpuHotplugSmm.inf
 INF  UefiCpuPkg/CpuIo2Smm/CpuIo2Smm.inf
 INF  MdeModulePkg/Universal/LockBox/SmmLockBox/SmmLockBox.inf
 INF  UefiCpuPkg/PiSmmCpuDxeSmm/PiSmmCpuDxeSmm.inf
-INF  MdeModulePkg/Application/SmmHarden/SmmHarden.inf
 
 #
 # Variable driver stack (SMM)

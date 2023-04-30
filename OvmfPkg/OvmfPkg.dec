@@ -125,6 +125,10 @@
   #
   PeilessStartupLib|Include/Library/PeilessStartupLib.h
 
+  ##  @libraryclass  HardwareInfoLib
+  #
+  HardwareInfoLib|Include/Library/HardwareInfoLib.h
+
 [Guids]
   gUefiOvmfPkgTokenSpaceGuid            = {0x93bb96af, 0xb9f2, 0x4eb8, {0x94, 0x62, 0xe0, 0xba, 0x74, 0x56, 0x42, 0x36}}
   gEfiXenInfoGuid                       = {0xd3b46f3b, 0xd441, 0x1244, {0x9a, 0x12, 0x0, 0x12, 0x27, 0x3f, 0xc1, 0x4d}}
@@ -142,6 +146,7 @@
   gConfidentialComputingSecretGuid      = {0xadf956ad, 0xe98c, 0x484c, {0xae, 0x11, 0xb5, 0x1c, 0x7d, 0x33, 0x64, 0x47}}
   gConfidentialComputingSevSnpBlobGuid  = {0x067b1f5f, 0xcf26, 0x44c5, {0x85, 0x54, 0x93, 0xd7, 0x77, 0x91, 0x2d, 0x42}}
   gUefiOvmfPkgPlatformInfoGuid          = {0xdec9b486, 0x1f16, 0x47c7, {0x8f, 0x68, 0xdf, 0x1a, 0x41, 0x88, 0x8b, 0xa5}}
+  gQemuBootOrderGuid                    = {0x668f4529, 0x63d0, 0x4bb5, {0xb6, 0x5d, 0x6f, 0xbb, 0x9d, 0x36, 0xa4, 0x4a}}
 
 [Ppis]
   # PPI whose presence in the PPI database signals that the TPM base address
@@ -395,6 +400,10 @@
   ## The Tdx accept page size. 0x1000(4k),0x200000(2M)
   gUefiOvmfPkgTokenSpaceGuid.PcdTdxAcceptPageSize|0x200000|UINT32|0x65
 
+  ## The QEMU fw_cfg variable that UefiDriverEntryPointFwCfgOverrideLib will
+  #  check to decide whether to abort dispatch of the driver it is linked into.
+  gUefiOvmfPkgTokenSpaceGuid.PcdEntryPointOverrideFwCfgVarName|""|VOID*|0x68
+
 [PcdsDynamic, PcdsDynamicEx]
   gUefiOvmfPkgTokenSpaceGuid.PcdEmuVariableEvent|0|UINT64|2
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFlashVariablesEnable|FALSE|BOOLEAN|0x10
@@ -440,6 +449,12 @@
   #    1 - set from PlatformConfig
   #    2 - set by GOP Driver.
   gUefiOvmfPkgTokenSpaceGuid.PcdVideoResolutionSource|0|UINT8|0x64
+
+  ## This PCD records LAML field in CC EVENTLOG ACPI table.
+  gUefiOvmfPkgTokenSpaceGuid.PcdCcEventlogAcpiTableLaml|0|UINT32|0x66
+
+  ## This PCD records LASA field in CC EVENTLOG ACPI table.
+  gUefiOvmfPkgTokenSpaceGuid.PcdCcEventlogAcpiTableLasa|0|UINT64|0x67
 
 [PcdsFeatureFlag]
   gUefiOvmfPkgTokenSpaceGuid.PcdQemuBootOrderPciTranslation|TRUE|BOOLEAN|0x1c

@@ -157,11 +157,11 @@ StrCmp (
   @return others FirstString is not identical to SecondString.
 
 **/
-_Checked INTN
+INTN
 EFIAPI
 StrnCmp (
-  IN      CONST CHAR16  *FirstString : itype(_Array_ptr<CONST CHAR16>) count(Length),
-  IN      CONST CHAR16  *SecondString : itype(_Array_ptr<CONST CHAR16>) count(Length),
+  IN      CONST CHAR16  *FirstString,
+  IN      CONST CHAR16  *SecondString,
   IN      UINTN         Length
   )
 {
@@ -173,14 +173,11 @@ StrnCmp (
   // ASSERT both strings are less long than PcdMaximumUnicodeStringLength.
   // Length tests are performed inside StrLen().
   //
-  _Unchecked{
   ASSERT (StrSize (FirstString) != 0);
   ASSERT (StrSize (SecondString) != 0);
-  }
+
   if (PcdGet32 (PcdMaximumUnicodeStringLength) != 0) {
-   _Unchecked{
-	  ASSERT (Length <= PcdGet32 (PcdMaximumUnicodeStringLength));
-   }
+    ASSERT (Length <= PcdGet32 (PcdMaximumUnicodeStringLength));
   }
 
   while ((*FirstString != L'\0') &&
@@ -188,12 +185,9 @@ StrnCmp (
          (*FirstString == *SecondString) &&
          (Length > 1))
   {
-    
-    _Bundled{
     FirstString++;
     SecondString++;
-    Length--; 
-   }
+    Length--;
   }
 
   return *FirstString - *SecondString;

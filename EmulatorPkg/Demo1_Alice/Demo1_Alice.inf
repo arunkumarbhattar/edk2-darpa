@@ -1,0 +1,59 @@
+## @file
+# 
+# Module Name:
+# 
+#   Demo1_Alice.inf
+# 
+# Abstract:
+# 
+#   Alice driver works with Bob driver
+# 
+# Revision History: 0.1
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = Demo1_Alice
+  FILE_GUID                      = aae15d50-e7f5-4537-9c46-ac5adc1948b9
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = Demo1AliceInit
+  UNLOAD_IMAGE                   = Demo1AliceUnload
+
+#
+# The following information is for reference only and not required by the build tools.
+#
+#  VALID_ARCHITECTURES           = IA32 X64 EBC
+#
+
+[Sources]
+  Demo1_Alice.c
+  Demo1_Alice.h
+
+[Packages]
+  MdePkg/MdePkg.dec
+  MdeModulePkg/MdeModulePkg.dec
+  EmulatorPkg/EmulatorPkg.dec
+
+
+[LibraryClasses]
+  BaseLib
+  MemoryAllocationLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+  BaseMemoryLib
+  DebugLib
+  PrintLib
+  UefiLib
+
+[Guids]
+  gAliceVariableGuid
+
+[Protocols]
+  gEfiRngProtocolGuid                      ## CONSUMES
+  gDemo1AccessKeyProtocolGuid              ## CONSUMES
+  gDemo1AliceProtocolGuid                  ## PRODUCES
+  gDemo1AliceReadyToRunGuid                ## PRODUCES
+
+[Depex]
+  gEfiCpuArchProtocolGuid

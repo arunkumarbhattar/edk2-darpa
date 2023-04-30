@@ -1,10 +1,11 @@
 /** @file
-  Industry Standard Definitions of SMBIOS Table Specification v3.5.0.
+  Industry Standard Definitions of SMBIOS Table Specification v3.6.0.
 
 Copyright (c) 2006 - 2021, Intel Corporation. All rights reserved.<BR>
 (C) Copyright 2015-2017 Hewlett Packard Enterprise Development LP<BR>
 (C) Copyright 2015 - 2019 Hewlett Packard Enterprise Development LP<BR>
 Copyright (c) 2022, AMD Incorporated. All rights reserved.<BR>
+Copyright (c) 1985 - 2022, American Megatrends International LLC.<BR>
 SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
@@ -722,21 +723,39 @@ typedef enum {
 /// Processor Information2 - Processor Family2.
 ///
 typedef enum {
-  ProcessorFamilyARMv7          = 0x0100,
-  ProcessorFamilyARMv8          = 0x0101,
-  ProcessorFamilySH3            = 0x0104,
-  ProcessorFamilySH4            = 0x0105,
-  ProcessorFamilyARM            = 0x0118,
-  ProcessorFamilyStrongARM      = 0x0119,
-  ProcessorFamily6x86           = 0x012C,
-  ProcessorFamilyMediaGX        = 0x012D,
-  ProcessorFamilyMII            = 0x012E,
-  ProcessorFamilyWinChip        = 0x0140,
-  ProcessorFamilyDSP            = 0x015E,
-  ProcessorFamilyVideoProcessor = 0x01F4,
-  ProcessorFamilyRiscvRV32      = 0x0200,
-  ProcessorFamilyRiscVRV64      = 0x0201,
-  ProcessorFamilyRiscVRV128     = 0x0202
+  ProcessorFamilyARMv7               = 0x0100,
+  ProcessorFamilyARMv8               = 0x0101,
+  ProcessorFamilyARMv9               = 0x0102,
+  ProcessorFamilySH3                 = 0x0104,
+  ProcessorFamilySH4                 = 0x0105,
+  ProcessorFamilyARM                 = 0x0118,
+  ProcessorFamilyStrongARM           = 0x0119,
+  ProcessorFamily6x86                = 0x012C,
+  ProcessorFamilyMediaGX             = 0x012D,
+  ProcessorFamilyMII                 = 0x012E,
+  ProcessorFamilyWinChip             = 0x0140,
+  ProcessorFamilyDSP                 = 0x015E,
+  ProcessorFamilyVideoProcessor      = 0x01F4,
+  ProcessorFamilyRiscvRV32           = 0x0200,
+  ProcessorFamilyRiscVRV64           = 0x0201,
+  ProcessorFamilyRiscVRV128          = 0x0202,
+  ProcessorFamilyLoongArch           = 0x0258,
+  ProcessorFamilyLoongson1           = 0x0259,
+  ProcessorFamilyLoongson2           = 0x025A,
+  ProcessorFamilyLoongson3           = 0x025B,
+  ProcessorFamilyLoongson2K          = 0x025C,
+  ProcessorFamilyLoongson3A          = 0x025D,
+  ProcessorFamilyLoongson3B          = 0x025E,
+  ProcessorFamilyLoongson3C          = 0x025F,
+  ProcessorFamilyLoongson3D          = 0x0260,
+  ProcessorFamilyLoongson3E          = 0x0261,
+  ProcessorFamilyDualCoreLoongson2K  = 0x0262,
+  ProcessorFamilyQuadCoreLoongson3A  = 0x026C,
+  ProcessorFamilyMultiCoreLoongson3A = 0x026D,
+  ProcessorFamilyQuadCoreLoongson3B  = 0x026E,
+  ProcessorFamilyMultiCoreLoongson3B = 0x026F,
+  ProcessorFamilyMultiCoreLoongson3C = 0x0270,
+  ProcessorFamilyMultiCoreLoongson3D = 0x0271
 } PROCESSOR_FAMILY2_DATA;
 
 ///
@@ -817,7 +836,16 @@ typedef enum {
   ProcessorUpgradeSocketBGA1528   = 0x3C,
   ProcessorUpgradeSocketLGA4189   = 0x3D,
   ProcessorUpgradeSocketLGA1200   = 0x3E,
-  ProcessorUpgradeSocketLGA4677   = 0x3F
+  ProcessorUpgradeSocketLGA4677   = 0x3F,
+  ProcessorUpgradeSocketLGA1700   = 0x40,
+  ProcessorUpgradeSocketBGA1744   = 0x41,
+  ProcessorUpgradeSocketBGA1781   = 0x42,
+  ProcessorUpgradeSocketBGA1211   = 0x43,
+  ProcessorUpgradeSocketBGA2422   = 0x44,
+  ProcessorUpgradeSocketLGA1211   = 0x45,
+  ProcessorUpgradeSocketLGA2422   = 0x46,
+  ProcessorUpgradeSocketLGA5773   = 0x47,
+  ProcessorUpgradeSocketBGA5773   = 0x48
 } PROCESSOR_UPGRADE;
 
 ///
@@ -825,12 +853,12 @@ typedef enum {
 ///
 typedef struct {
   UINT32    ProcessorSteppingId : 4;
-  UINT32    ProcessorModel      :     4;
-  UINT32    ProcessorFamily     :    4;
-  UINT32    ProcessorType       :      2;
+  UINT32    ProcessorModel      : 4;
+  UINT32    ProcessorFamily     : 4;
+  UINT32    ProcessorType       : 2;
   UINT32    ProcessorReserved1  : 2;
-  UINT32    ProcessorXModel     :    4;
-  UINT32    ProcessorXFamily    :   8;
+  UINT32    ProcessorXModel     : 4;
+  UINT32    ProcessorXFamily    : 8;
   UINT32    ProcessorReserved2  : 4;
 } PROCESSOR_SIGNATURE;
 
@@ -946,6 +974,10 @@ typedef struct {
   UINT16                 CoreCount2;
   UINT16                 EnabledCoreCount2;
   UINT16                 ThreadCount2;
+  //
+  // Add for smbios 3.6
+  //
+  UINT16                 ThreadEnabled;
 } SMBIOS_TABLE_TYPE4;
 
 ///
@@ -1504,16 +1536,27 @@ typedef struct {
   UINT8                         PeerGroupingCount;
   MISC_SLOT_PEER_GROUP          PeerGroups[1];
   //
+  // Since PeerGroups has a variable number of entries, must not define new
+  // fields in the structure. Remaining fields can be referenced using
+  // SMBIOS_TABLE_TYPE9_EXTENDED structure
+  //
+} SMBIOS_TABLE_TYPE9;
+
+///
+/// Extended structure for System Slots (Type 9)
+///
+typedef struct {
+  //
   // Add for smbios 3.4
   //
-  UINT8                         SlotInformation;
-  UINT8                         SlotPhysicalWidth;
-  UINT16                        SlotPitch;
+  UINT8     SlotInformation;
+  UINT8     SlotPhysicalWidth;
+  UINT16    SlotPitch;
   //
   // Add for smbios 3.5
   //
-  UINT8                         SlotHeight;             ///< The enumeration value from MISC_SLOT_HEIGHT.
-} SMBIOS_TABLE_TYPE9;
+  UINT8     SlotHeight;             ///< The enumeration value from MISC_SLOT_HEIGHT.
+} SMBIOS_TABLE_TYPE9_EXTENDED;
 
 ///
 /// On Board Devices Information - Device Types.
@@ -1811,7 +1854,8 @@ typedef enum {
   MemoryTypeHBM                      = 0x20,
   MemoryTypeHBM2                     = 0x21,
   MemoryTypeDdr5                     = 0x22,
-  MemoryTypeLpddr5                   = 0x23
+  MemoryTypeLpddr5                   = 0x23,
+  MemoryTypeHBM3                     = 0x24
 } MEMORY_DEVICE_TYPE;
 
 ///
@@ -2660,15 +2704,17 @@ typedef struct {
 /// Processor Specific Block - Processor Architecture Type
 ///
 typedef enum {
-  ProcessorSpecificBlockArchTypeReserved   = 0x00,
-  ProcessorSpecificBlockArchTypeIa32       = 0x01,
-  ProcessorSpecificBlockArchTypeX64        = 0x02,
-  ProcessorSpecificBlockArchTypeItanium    = 0x03,
-  ProcessorSpecificBlockArchTypeAarch32    = 0x04,
-  ProcessorSpecificBlockArchTypeAarch64    = 0x05,
-  ProcessorSpecificBlockArchTypeRiscVRV32  = 0x06,
-  ProcessorSpecificBlockArchTypeRiscVRV64  = 0x07,
-  ProcessorSpecificBlockArchTypeRiscVRV128 = 0x08
+  ProcessorSpecificBlockArchTypeReserved    = 0x00,
+  ProcessorSpecificBlockArchTypeIa32        = 0x01,
+  ProcessorSpecificBlockArchTypeX64         = 0x02,
+  ProcessorSpecificBlockArchTypeItanium     = 0x03,
+  ProcessorSpecificBlockArchTypeAarch32     = 0x04,
+  ProcessorSpecificBlockArchTypeAarch64     = 0x05,
+  ProcessorSpecificBlockArchTypeRiscVRV32   = 0x06,
+  ProcessorSpecificBlockArchTypeRiscVRV64   = 0x07,
+  ProcessorSpecificBlockArchTypeRiscVRV128  = 0x08,
+  ProcessorSpecificBlockArchTypeLoongArch32 = 0x09,
+  ProcessorSpecificBlockArchTypeLoongArch64 = 0x0A
 } PROCESSOR_SPECIFIC_BLOCK_ARCH_TYPE;
 
 ///
@@ -2746,11 +2792,11 @@ typedef enum {
 ///
 /// Firmware Inventory Firmware Characteristics (Type 45).
 ///
-typedef enum {
-  CharacteristicsUpdatable      = 0x00,
-  CharacteristicsWriteProtected = 0x01,
-  CharacteristicsReserved       = 0x02    /// 0x02 - 0x0F are reserved
-} FIRMWARE_INVENTORY_CHARACTERISTICS;
+typedef struct {
+  UINT16    Updatable      : 1;
+  UINT16    WriteProtected : 1;
+  UINT16    Reserved       : 14;
+} FIRMWARE_CHARACTERISTICS;
 
 ///
 /// Firmware Inventory State Information (Type 45).
@@ -2763,7 +2809,7 @@ typedef enum {
   FirmwareInventoryStateAbsent             = 0x05,
   FirmwareInventoryStateStandbyOffline     = 0x06,
   FirmwareInventoryStateStandbySpare       = 0x07,
-  FirmwareInventoryStateUnavailableOffline = 0x08,
+  FirmwareInventoryStateUnavailableOffline = 0x08
 } FIRMWARE_INVENTORY_STATE;
 
 ///
@@ -2780,21 +2826,19 @@ typedef enum {
 /// One Type 45 structure is provided for each firmware component.
 ///
 typedef struct {
-  SMBIOS_STRUCTURE    Hdr;
-  SMBIOS_HANDLE       RefHandle;
-
-  UINT8               FirmwareComponentName;
-  UINT8               FirmwareVersion;
-  UINT8               FirmwareVersionFormat;    ///< The enumeration value from FIRMWARE_INVENTORY_VERSION_FORMAT_TYPE
-  UINT8               FirmwareId;
-  UINT8               FirmwareIdFormat;
-  UINT8               ReleaseDate;
-  UINT8               Manufacturer;
-  UINT8               LowestSupportedVersion;
-  UINT64              ImageSize;
-  UINT32              Characteristics;
-  UINT8               State;
-  UINT8               AssociatedComponentCount;
+  SMBIOS_STRUCTURE            Hdr;
+  SMBIOS_TABLE_STRING         FirmwareComponentName;
+  SMBIOS_TABLE_STRING         FirmwareVersion;
+  UINT8                       FirmwareVersionFormat;    ///< The enumeration value from FIRMWARE_INVENTORY_VERSION_FORMAT_TYPE
+  SMBIOS_TABLE_STRING         FirmwareId;
+  UINT8                       FirmwareIdFormat;         ///< The enumeration value from FIRMWARE_INVENTORY_FIRMWARE_ID_FORMAT_TYPE.
+  SMBIOS_TABLE_STRING         ReleaseDate;
+  SMBIOS_TABLE_STRING         Manufacturer;
+  SMBIOS_TABLE_STRING         LowestSupportedVersion;
+  UINT64                      ImageSize;
+  FIRMWARE_CHARACTERISTICS    Characteristics;
+  UINT8                       State;                    ///< The enumeration value from FIRMWARE_INVENTORY_STATE.
+  UINT8                       AssociatedComponentCount;
   ///
   /// zero or n-number of handles depends on AssociatedComponentCount
   /// handles are of type SMBIOS_HANDLE
@@ -2820,11 +2864,10 @@ typedef enum {
 /// parent structure.
 ///
 typedef struct {
-  SMBIOS_STRUCTURE    Hdr;
-  SMBIOS_HANDLE       RefHandle;
-  UINT16              StringPropertyId;
-  UINT8               StringPropertyValue;
-  SMBIOS_HANDLE       ParentHandle;
+  SMBIOS_STRUCTURE       Hdr;
+  UINT16                 StringPropertyId;          ///< The enumeration value from STRING_PROPERTY_ID.
+  SMBIOS_TABLE_STRING    StringPropertyValue;
+  SMBIOS_HANDLE          ParentHandle;
 } SMBIOS_TABLE_TYPE46;
 
 ///

@@ -3,7 +3,7 @@
   and intended for use as a means to store data in the EFI SMM environment.
 
   Copyright (c) 2010 - 2018, Intel Corporation. All rights reserved.<BR>
-  SPDX-License-Identifier: BSD-2-Clause-Paten
+  SPDX-License-Identifier: BSD-2-Clause-Patent
 
 **/
 
@@ -26,19 +26,6 @@ struct _EFI_SMM_VARIABLE_PROTOCOL {
   EFI_GET_NEXT_VARIABLE_NAME    SmmGetNextVariableName;
   EFI_SET_VARIABLE              SmmSetVariable;
   EFI_QUERY_VARIABLE_INFO       SmmQueryVariableInfo;
-};
-
-typedef struct _EFI_SMM_VARIABLE_PROTOCOL_C EFI_SMM_VARIABLE_PROTOCOL_C;
-
-///
-/// EFI SMM Variable Protocol is intended for use as a means
-/// to store data in the EFI SMM environment.
-///
-struct _EFI_SMM_VARIABLE_PROTOCOL_C {
-    EFI_GET_VARIABLE_C            SmmGetVariable;
-    EFI_GET_NEXT_VARIABLE_NAME    SmmGetNextVariableName;
-    EFI_SET_VARIABLE_C            SmmSetVariable;
-    EFI_QUERY_VARIABLE_INFO       SmmQueryVariableInfo;
 };
 
 extern EFI_GUID  gEfiSmmVariableProtocolGuid;

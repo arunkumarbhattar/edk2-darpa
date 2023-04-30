@@ -564,18 +564,6 @@ UEFI_DEFINED_VARIABLE_ENTRY  mGlobalVariableList[] = {
     },
     NULL
   },
-  {
-    L"SYS-FirstTime",
-    {
-      VAR_CHECK_VARIABLE_PROPERTY_REVISION,
-      VAR_CHECK_VARIABLE_PROPERTY_READ_ONLY,
-      VARIABLE_ATTRIBUTE_NV_BS,
-      sizeof (UINT32),
-      sizeof (UINT32)
-    },
-    NULL
-  },
-
 };
 
 UEFI_DEFINED_VARIABLE_ENTRY  mGlobalVariableList2[] = {

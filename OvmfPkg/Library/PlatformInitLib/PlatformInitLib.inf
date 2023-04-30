@@ -47,15 +47,19 @@
   HobLib
   QemuFwCfgLib
   QemuFwCfgSimpleParserLib
+  MemoryAllocationLib
   MtrrLib
   PcdLib
   PciLib
+  PeiHardwareInfoLib
 
 [LibraryClasses.X64]
   TdxLib
 
-[FixedPcd]
+[Pcd]
   gEfiMdePkgTokenSpaceGuid.PcdPciExpressBaseAddress
+
+[FixedPcd]
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfWorkAreaBase
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfWorkAreaSize
   gUefiOvmfPkgTokenSpaceGuid.PcdOvmfLockBoxStorageBase
@@ -93,6 +97,8 @@
   gUefiOvmfPkgTokenSpaceGuid.PcdGuidedExtractHandlerTableSize
 
   gUefiOvmfPkgTokenSpaceGuid.PcdTdxAcceptPageSize
+  gUefiOvmfPkgTokenSpaceGuid.PcdOvmfFlashNvStorageVariableBase
+  gUefiOvmfPkgTokenSpaceGuid.PcdCfvRawDataSize
 
 [FeaturePcd]
   gEfiMdeModulePkgTokenSpaceGuid.PcdDxeIplSwitchToLongMode

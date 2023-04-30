@@ -169,16 +169,6 @@ EFI_STATUS
   IN OUT UINTN   *CommBufferSize  OPTIONAL
   );
 
-
-typedef
-EFI_STATUS
-(EFIAPI *EFI_MM_HANDLER_ENTRY_POINT_C)(
-  IN EFI_HANDLE  DispatchHandle,
-  IN CONST _Ptr<VOID>  Context         OPTIONAL,
-  IN OUT _Array_ptr<VOID>         CommBuffer      OPTIONAL,
-  IN OUT _Ptr<UINTN>   CommBufferSize  OPTIONAL
-  );
-
 /**
   Registers a handler to execute within MM.
 

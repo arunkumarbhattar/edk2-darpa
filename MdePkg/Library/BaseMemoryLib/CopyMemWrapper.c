@@ -36,13 +36,13 @@
   @return DestinationBuffer.
 
 **/
-_Checked VOID *
+VOID *
 EFIAPI
 CopyMem (
-  OUT VOID       *DestinationBuffer : itype(_Array_ptr<VOID>),
-  IN CONST VOID  *SourceBuffer : itype(_Array_ptr<VOID>) byte_count(Length),
+  OUT VOID       *DestinationBuffer,
+  IN CONST VOID  *SourceBuffer,
   IN UINTN       Length
-  ) : itype(_Array_ptr<VOID>)
+  )
 {
   if (Length == 0) {
     return DestinationBuffer;

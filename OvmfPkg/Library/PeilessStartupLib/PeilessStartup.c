@@ -42,6 +42,7 @@ InitializePlatform (
   )
 {
   UINT32  LowerMemorySize;
+  VOID    *VariableStore;
 
   DEBUG ((DEBUG_INFO, "InitializePlatform in Pei-less boot\n"));
   PlatformDebugDumpCmos ();
@@ -78,6 +79,12 @@ InitializePlatform (
     PlatformInfoHob->Uc32Size,
     LowerMemorySize
     ));
+
+  VariableStore                                  = PlatformReserveEmuVariableNvStore ();
+  PlatformInfoHob->PcdEmuVariableNvStoreReserved = (UINT64)(UINTN)VariableStore;
+ #ifdef SECURE_BOOT_FEATURE_ENABLED
+  PlatformInitEmuVariableNvStore (VariableStore);
+ #endif
 
   if (TdIsEnabled ()) {
     PlatformTdxPublishRamRegions ();
@@ -133,11 +140,13 @@ PeilessStartup (
   UINT32                      DxeCodeSize;
   TD_RETURN_DATA              TdReturnData;
   VOID                        *VmmHobList;
+  UINT8                       *CfvBase;
 
   Status      = EFI_SUCCESS;
   BootFv      = NULL;
   VmmHobList  = NULL;
   SecCoreData = (EFI_SEC_PEI_HAND_OFF *)Context;
+  CfvBase     = (UINT8 *)(UINTN)FixedPcdGet32 (PcdCfvBase);
 
   ZeroMem (&PlatformInfoHob, sizeof (PlatformInfoHob));
 
@@ -166,6 +175,26 @@ PeilessStartup (
   }
 
   DEBUG ((DEBUG_INFO, "HobList: %p\n", GetHobList ()));
+
+  if (TdIsEnabled ()) {
+    //
+    // Measure HobList
+    //
+    Status = MeasureHobList (VmmHobList);
+    if (EFI_ERROR (Status)) {
+      ASSERT (FALSE);
+      CpuDeadLoop ();
+    }
+
+    //
+    // Measure Tdx CFV
+    //
+    Status = MeasureFvImage ((EFI_PHYSICAL_ADDRESS)(UINTN)CfvBase, FixedPcdGet32 (PcdCfvRawDataSize), 1);
+    if (EFI_ERROR (Status)) {
+      ASSERT (FALSE);
+      CpuDeadLoop ();
+    }
+  }
 
   //
   // Initialize the Platform

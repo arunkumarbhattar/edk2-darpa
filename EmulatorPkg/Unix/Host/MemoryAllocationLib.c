@@ -24,13 +24,13 @@
   @return A pointer to the allocated buffer or NULL if allocation fails.
 
 **/
-VOID *
+_Checked VOID *
 EFIAPI
 AllocatePool (
   IN UINTN  AllocationSize
-  )
+  ) _Itype(VOID * _Array) _Byte_count(AllocationSize)
 {
-  return (VOID *)malloc (AllocationSize);
+  return malloc <VOID> (AllocationSize);
 }
 
 /**

@@ -49,8 +49,8 @@
   #
   # Device drivers
   #
-  DEFINE PVSCSI_ENABLE           = TRUE
-  DEFINE MPT_SCSI_ENABLE         = TRUE
+  DEFINE PVSCSI_ENABLE           = FALSE
+  DEFINE MPT_SCSI_ENABLE         = FALSE
   DEFINE LSI_SCSI_ENABLE         = FALSE
 
   #
@@ -92,6 +92,15 @@
   MSFT:*_*_*_CC_FLAGS = /D DISABLE_NEW_DEPRECATED_INTERFACES
   INTEL:*_*_*_CC_FLAGS = /D DISABLE_NEW_DEPRECATED_INTERFACES
   GCC:*_*_*_CC_FLAGS = -D DISABLE_NEW_DEPRECATED_INTERFACES
+
+  #
+  # SECURE_BOOT_FEATURE_ENABLED
+  #
+!if $(SECURE_BOOT_ENABLE) == TRUE
+  MSFT:*_*_*_CC_FLAGS = /D SECURE_BOOT_FEATURE_ENABLED
+  INTEL:*_*_*_CC_FLAGS = /D SECURE_BOOT_FEATURE_ENABLED
+  GCC:*_*_*_CC_FLAGS = -D SECURE_BOOT_FEATURE_ENABLED
+!endif
 
 !include NetworkPkg/NetworkBuildOptions.dsc.inc
 
@@ -175,11 +184,13 @@
   UefiCpuLib|UefiCpuPkg/Library/BaseUefiCpuLib/BaseUefiCpuLib.inf
   SecurityManagementLib|MdeModulePkg/Library/DxeSecurityManagementLib/DxeSecurityManagementLib.inf
   SerializeVariablesLib|OvmfPkg/Library/SerializeVariablesLib/SerializeVariablesLib.inf
-  QemuFwCfgLib|OvmfPkg/Library/QemuFwCfgLib/QemuFwCfgDxeLib.inf
+  QemuFwCfgLib|OvmfPkg/Library/QemuFwCfgLib/QemuFwCfgLibNull.inf
   QemuFwCfgSimpleParserLib|OvmfPkg/Library/QemuFwCfgSimpleParserLib/QemuFwCfgSimpleParserLib.inf
   VirtioLib|OvmfPkg/Library/VirtioLib/VirtioLib.inf
   LoadLinuxLib|OvmfPkg/Library/LoadLinuxLib/LoadLinuxLib.inf
   MemEncryptSevLib|OvmfPkg/Library/BaseMemEncryptSevLib/DxeMemEncryptSevLib.inf
+  PeiHardwareInfoLib|OvmfPkg/Library/HardwareInfoLib/PeiHardwareInfoLib.inf
+  DxeHardwareInfoLib|OvmfPkg/Library/HardwareInfoLib/DxeHardwareInfoLib.inf
 !if $(SMM_REQUIRE) == FALSE
   LockBoxLib|OvmfPkg/Library/LockBoxLib/LockBoxBaseLib.inf
 !endif
@@ -210,6 +221,7 @@
   PlatformSecureLib|OvmfPkg/Library/PlatformSecureLib/PlatformSecureLib.inf
   AuthVariableLib|SecurityPkg/Library/AuthVariableLib/AuthVariableLib.inf
   SecureBootVariableLib|SecurityPkg/Library/SecureBootVariableLib/SecureBootVariableLib.inf
+  PlatformPKProtectionLib|SecurityPkg/Library/PlatformPKProtectionLibVarPolicy/PlatformPKProtectionLibVarPolicy.inf
   SecureBootVariableProvisionLib|SecurityPkg/Library/SecureBootVariableProvisionLib/SecureBootVariableProvisionLib.inf
 !else
   AuthVariableLib|MdeModulePkg/Library/AuthVariableLibNull/AuthVariableLibNull.inf
@@ -306,9 +318,7 @@
   MpInitLib|UefiCpuPkg/Library/MpInitLib/PeiMpInitLib.inf
   QemuFwCfgS3Lib|OvmfPkg/Library/QemuFwCfgS3Lib/PeiQemuFwCfgS3LibFwCfg.inf
   PcdLib|MdePkg/Library/PeiPcdLib/PeiPcdLib.inf
-  QemuFwCfgLib|OvmfPkg/Library/QemuFwCfgLib/QemuFwCfgPeiLib.inf
-
-!include OvmfPkg/OvmfTpmLibsPeim.dsc.inc
+  QemuFwCfgLib|OvmfPkg/Library/QemuFwCfgLib/QemuFwCfgLibNull.inf
 
   MemEncryptSevLib|OvmfPkg/Library/BaseMemEncryptSevLib/PeiMemEncryptSevLib.inf
   PlatformInitLib|OvmfPkg/Library/PlatformInitLib/PlatformInitLib.inf
@@ -396,8 +406,6 @@
   MpInitLib|UefiCpuPkg/Library/MpInitLib/DxeMpInitLib.inf
   QemuFwCfgS3Lib|OvmfPkg/Library/QemuFwCfgS3Lib/DxeQemuFwCfgS3LibFwCfg.inf
   QemuLoadImageLib|OvmfPkg/Library/X86QemuLoadImageLib/X86QemuLoadImageLib.inf
-
-!include OvmfPkg/OvmfTpmLibsDxe.dsc.inc
 
 [LibraryClasses.common.UEFI_APPLICATION]
   PcdLib|MdePkg/Library/DxePcdLib/DxePcdLib.inf
@@ -819,18 +827,8 @@
   # Network Support
   #
 !include NetworkPkg/NetworkComponents.dsc.inc
+!include OvmfPkg/NetworkComponents.dsc.inc
 
-  NetworkPkg/UefiPxeBcDxe/UefiPxeBcDxe.inf {
-    <LibraryClasses>
-      NULL|OvmfPkg/Library/PxeBcPcdProducerLib/PxeBcPcdProducerLib.inf
-  }
-
-!if $(NETWORK_TLS_ENABLE) == TRUE
-  NetworkPkg/TlsAuthConfigDxe/TlsAuthConfigDxe.inf {
-    <LibraryClasses>
-      NULL|OvmfPkg/Library/TlsAuthConfigLib/TlsAuthConfigLib.inf
-  }
-!endif
   OvmfPkg/VirtioNetDxe/VirtioNet.inf
 
 !if $(TOOL_CHAIN_TAG) != "XCODE5"

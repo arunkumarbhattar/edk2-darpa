@@ -155,6 +155,14 @@ INF  EmulatorPkg/CpuRuntimeDxe/Cpu.inf
 INF  MdeModulePkg/Universal/FaultTolerantWriteDxe/FaultTolerantWriteDxe.inf
 INF  EmulatorPkg/PlatformSmbiosDxe/PlatformSmbiosDxe.inf
 INF  EmulatorPkg/TimerDxe/Timer.inf
+
+#### DEMO1 DRIVERS
+INF  EmulatorPkg/Demo1_Access_Key/Demo1_Access_Key.inf
+INF  EmulatorPkg/Demo1_Variable/Demo1_Variable.inf
+INF  SecurityPkg/RandomNumberGenerator/RngDxe/RngDxe.inf
+INF  EmulatorPkg/Demo1_Alice/Demo1_Alice.inf
+INF  EmulatorPkg/Demo1_Bob/Demo1_Bob.inf
+
 INF  MdeModulePkg/Universal/Variable/RuntimeDxe/VariableRuntimeDxe.inf
 INF  MdeModulePkg/Universal/WatchdogTimerDxe/WatchdogTimer.inf
 INF  MdeModulePkg/Universal/MonotonicCounterRuntimeDxe/MonotonicCounterRuntimeDxe.inf
@@ -192,6 +200,8 @@ INF  MdeModulePkg/Universal/LoadFileOnFv2/LoadFileOnFv2.inf
 INF  RuleOverride = UI MdeModulePkg/Application/UiApp/UiApp.inf
 INF  MdeModulePkg/Application/BootManagerMenuApp/BootManagerMenuApp.inf
 INF  MdeModulePkg/Universal/DriverSampleDxe/DriverSampleDxe.inf
+
+INF MdeModulePkg/Application/HelloWorld/HelloWorld.inf
 
 #
 # Secure Boot Key Enroll
