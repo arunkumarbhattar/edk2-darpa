@@ -210,7 +210,7 @@ _Checked VOID *
 EFIAPI
 AllocatePool (
   IN UINTN  AllocationSize
-  ) _Itype(VOID* _Array) _Byte_count(AllocationSize);
+  ) :itype(_Array_ptr<VOID>) byte_count(AllocationSize);
 
 /**
   Allocates a buffer of type EfiRuntimeServicesData.
@@ -478,10 +478,10 @@ ReallocateReservedPool (
   @param  Buffer                Pointer to the buffer to free.
 
 **/
-VOID
+_Checked VOID
 EFIAPI
 FreePool (
-  IN VOID  *Buffer
+  IN VOID  *Buffer :itype(_Array_ptr<VOID>)
   );
 
 #endif

@@ -24,7 +24,7 @@ EFI_RNG_PROTOCOL *RngProtocol = NULL;
 Demo1_Access_Key_PROTOCOL  *AccessKeyProtocol = NULL;
 
 // GLOBALS
-DEMO1_ACCESS_KEY *aliceKey = NULL;
+_Ptr<DEMO1_ACCESS_KEY> aliceKey = NULL;
 UINTN Mode = INIT_MODE;
 
 /**

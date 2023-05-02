@@ -221,19 +221,19 @@ StrnSizeS (
                                    If DestMax is 0.
   @retval RETURN_ACCESS_DENIED     If Source and Destination overlap.
 **/
-RETURN_STATUS
+_Checked RETURN_STATUS
 EFIAPI
 StrCpyS (
-  OUT CHAR16        *Destination,
+  OUT CHAR16        *Destination : itype(_Nt_array_ptr<CHAR16>) byte_count(DestMax),
   IN  UINTN         DestMax,
-  IN  CONST CHAR16  *Source
+  IN  CONST CHAR16  *Source : itype(_Nt_array_ptr<CONST CHAR16>) byte_count(DestMax)
   )
 {
   UINTN  SourceLen;
 
+  _Unchecked{
   ASSERT (((UINTN)Destination & BIT0) == 0);
   ASSERT (((UINTN)Source & BIT0) == 0);
-
   //
   // 1. Neither Destination nor Source shall be a null pointer.
   //
@@ -262,7 +262,7 @@ StrCpyS (
   // 5. Copying shall not take place between objects that overlap.
   //
   SAFE_STRING_CONSTRAINT_CHECK (InternalSafeStringNoStrOverlap (Destination, DestMax, (CHAR16 *)Source, SourceLen + 1), RETURN_ACCESS_DENIED);
-
+  }
   //
   // The StrCpyS function copies the string pointed to by Source (including the terminating
   // null character) into the array pointed to by Destination.

@@ -704,12 +704,12 @@ EFI_STATUS
 typedef
 EFI_STATUS
 (EFIAPI *EFI_GET_ACCESS_VARIABLE)(
-  IN     CHAR16                      *VariableName,
-  IN     EFI_GUID                    *VendorGuid,
-  OUT    UINT32                      *Attributes     OPTIONAL,
-  IN     DEMO1_ACCESS_KEY           *AccessKey,
-  IN OUT UINTN                       *DataSize,
-  OUT    VOID                        *Data           OPTIONAL
+  IN     CHAR16                      *VariableName :itype(_Nt_array_ptr<CHAR16>),
+  IN     EFI_GUID                    *VendorGuid  :itype(_Ptr<EFI_GUID>),
+  OUT    UINT32                      *Attributes   :itype(_Ptr<UINT32>) OPTIONAL,
+  IN     DEMO1_ACCESS_KEY           *AccessKey :itype(_Ptr<DEMO1_ACCESS_KEY >),
+  IN OUT UINTN                       *DataSize :itype(_Ptr<UINTN>),
+  OUT    VOID                        *Data :itype(_Array_ptr<VOID>) byte_count(*DataSize) OPTIONAL
   );
 
 /**
@@ -828,12 +828,12 @@ EFI_STATUS
 typedef
 EFI_STATUS
 (EFIAPI *EFI_SET_ACCESS_VARIABLE)(
-  IN  CHAR16                       *VariableName,
-  IN  EFI_GUID                     *VendorGuid,
+  IN  CHAR16                       *VariableName :itype(_Nt_array_ptr<CHAR16>),
+  IN  EFI_GUID                     *VendorGuid :itype(_Ptr<EFI_GUID>),
   IN  UINT32                       Attributes,
-  IN  DEMO1_ACCESS_KEY             *AccessKey,
+  IN  DEMO1_ACCESS_KEY             *AccessKey :itype(_Ptr<DEMO1_ACCESS_KEY>),
   IN  UINTN                        DataSize,
-  IN  VOID                         *Data
+  IN  VOID                         *Data :itype(_Array_ptr<VOID>) byte_count(DataSize)
   );
 
 ///

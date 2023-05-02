@@ -52,7 +52,7 @@ EFI_STATUS
   IN Demo1_Access_Key_PROTOCOL            *This,
   IN EFI_HANDLE                           Controller,
   IN BOOLEAN                              WriteAccess,
-  IN OUT DEMO1_ACCESS_KEY                 *AccessKeyPtr
+  IN OUT _Ptr<DEMO1_ACCESS_KEY>           AccessKeyPtr
 );
 
 typedef
@@ -61,7 +61,7 @@ EFIAPI
 (EFIAPI *DRVR_FUNC_CB_TYPE2) (
   IN Demo1_Access_Key_PROTOCOL            *This,
   IN EFI_HANDLE                           Controller,
-  IN DEMO1_ACCESS_KEY                     *AccessKeyPtr,
+  IN DEMO1_ACCESS_KEY*                    AccessKeyPtr : itype(_Ptr<DEMO1_ACCESS_KEY>),
   IN BOOLEAN                              WriteAccess,
   IN OUT BOOLEAN                          *Result
 );
@@ -84,7 +84,7 @@ Demo1GenerateAccessKey(
   IN Demo1_Access_Key_PROTOCOL            *This,
   IN EFI_HANDLE                           Controller,
   IN BOOLEAN                              WriteAccess,
-  IN OUT DEMO1_ACCESS_KEY                 *AccessKeyPtr
+  IN OUT _Ptr<DEMO1_ACCESS_KEY>           AccessKeyPtr
 );
 
 EFI_STATUS
@@ -92,7 +92,7 @@ EFIAPI
 Demo1ValidateAccessKey (
   IN Demo1_Access_Key_PROTOCOL            *This,
   IN EFI_HANDLE                           Controller,
-  IN DEMO1_ACCESS_KEY                     *AccessKeyPtr,
+  IN DEMO1_ACCESS_KEY*                AccessKeyPtr : itype(_Ptr<DEMO1_ACCESS_KEY>),
   IN BOOLEAN                              WriteAccess,
   IN OUT BOOLEAN                          *Result
 );

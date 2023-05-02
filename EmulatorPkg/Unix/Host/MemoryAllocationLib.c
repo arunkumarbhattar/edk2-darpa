@@ -30,7 +30,7 @@ AllocatePool (
   IN UINTN  AllocationSize
   ) _Itype(VOID * _Array) _Byte_count(AllocationSize)
 {
-  return malloc <VOID> (AllocationSize);
+      	return malloc <VOID> (AllocationSize);
 }
 
 /**
@@ -125,11 +125,11 @@ ReallocatePool (
   @param  Buffer                Pointer to the buffer to free.
 
 **/
-VOID
+_Checked VOID
 EFIAPI
 FreePool (
-  IN VOID  *Buffer
+  IN VOID  *Buffer _Itype(VOID* _Array)
   )
 {
-  free ((void *)Buffer);
+  free <void> (Buffer);
 }

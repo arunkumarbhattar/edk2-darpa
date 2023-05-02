@@ -30,13 +30,13 @@ SPDX-License-Identifier: BSD-2-Clause-Patent
   @return DestinationBuffer.
 
 **/
-VOID *
+_Checked VOID *
 EFIAPI
 CopyMem (
-  OUT VOID       *DestinationBuffer,
-  IN CONST VOID  *SourceBuffer,
+  OUT VOID       *DestinationBuffer :itype(_Array_ptr<VOID>) byte_count(Length),
+  IN CONST VOID  *SourceBuffer :itype(_Array_ptr<CONST VOID>) byte_count(Length),
   IN UINTN       Length
-  );
+  ) :itype(_Array_ptr<VOID>) byte_count(Length);
 
 /**
   Fills a target buffer with a byte value, and returns the target buffer.
@@ -211,11 +211,11 @@ ZeroMem (
                             mismatched byte in DestinationBuffer.
 
 **/
-INTN
+_Checked INTN
 EFIAPI
 CompareMem (
-  IN CONST VOID  *DestinationBuffer,
-  IN CONST VOID  *SourceBuffer,
+  IN CONST VOID  *DestinationBuffer : itype(_Array_ptr<CONST VOID>) byte_count(Length),
+  IN CONST VOID  *SourceBuffer :itype(_Array_ptr<CONST VOID>) byte_count(Length),
   IN UINTN       Length
   );
 
@@ -380,8 +380,8 @@ ScanMemN (
 GUID *
 EFIAPI
 CopyGuid (
-  OUT GUID       *DestinationGuid,
-  IN CONST GUID  *SourceGuid
+  OUT GUID       *DestinationGuid :itype(_Ptr<GUID>),
+  IN CONST GUID  *SourceGuid :itype(_Ptr<CONST GUID>)
   );
 
 /**
@@ -403,8 +403,8 @@ CopyGuid (
 BOOLEAN
 EFIAPI
 CompareGuid (
-  IN CONST GUID  *Guid1,
-  IN CONST GUID  *Guid2
+  IN CONST GUID  *Guid1 :itype(_Ptr<CONST GUID>),
+  IN CONST GUID  *Guid2 :itype(_Ptr<CONST GUID>)
   );
 
 /**

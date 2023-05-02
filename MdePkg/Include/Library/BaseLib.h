@@ -1001,10 +1001,10 @@ StrLen (
   @return The size of String.
 
 **/
-UINTN
+_Checked UINTN
 EFIAPI
 StrSize (
-  IN      CONST CHAR16  *String
+  IN      CONST CHAR16  *String :itype(_Nt_array_ptr<CONST CHAR16>)
   );
 
 /**

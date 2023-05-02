@@ -221,7 +221,7 @@ typedef struct {
 /// 16-byte buffer. Access key - DEMO1.
 ///
 typedef struct {
-  UINTN access_key_store[2];
+  UINTN access_key_store _Checked[2];
 } _DEMO1_ACCESS_KEY;
 
 ///

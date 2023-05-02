@@ -45,8 +45,8 @@ VARIABLE_INFO_ENTRY  *gVarInfo = NULL;
 **/
 BOOLEAN
 IsValidAccessVariableHeader (
-  IN  ACCESS_VARIABLE_HEADER          *Variable,
-  IN  ACCESS_VARIABLE_HEADER          *VariableStoreEnd
+  IN  ACCESS_VARIABLE_HEADER          * Variable : itype(_Ptr<ACCESS_VARIABLE_HEADER>),
+  IN  ACCESS_VARIABLE_HEADER          *  VariableStoreEnd : itype(_Ptr<ACCESS_VARIABLE_HEADER>)
   )
 {
   if ((Variable == NULL) || (Variable >= VariableStoreEnd) || (Variable->StartId != VARIABLE_DATA)) {
@@ -71,13 +71,14 @@ IsValidAccessVariableHeader (
 **/
 UINTN
 DataSizeOfAccessVariable (
-  IN  ACCESS_VARIABLE_HEADER          *Variable,
+  IN  ACCESS_VARIABLE_HEADER          * Variable : itype(_Ptr<ACCESS_VARIABLE_HEADER>),
   IN  BOOLEAN                         AuthFormat
   )
 {
-  AUTHENTICATED_VARIABLE_HEADER  *AuthVariable;
+  _Ptr<AUTHENTICATED_VARIABLE_HEADER>  AuthVariable = NULL;
 
-  AuthVariable = (AUTHENTICATED_VARIABLE_HEADER *)Variable;
+  AuthVariable = (_Ptr<AUTHENTICATED_VARIABLE_HEADER>)
+          _Assume_bounds_cast<_Array_ptr<AUTHENTICATED_VARIABLE_HEADER>>(Variable, count(1));
   if (AuthFormat) {
     if ((AuthVariable->State == (UINT8)(-1)) ||
         (AuthVariable->DataSize == (UINT32)(-1)) ||
@@ -112,13 +113,14 @@ DataSizeOfAccessVariable (
 **/
 UINTN
 NameSizeOfAccessVariable (
-  IN  ACCESS_VARIABLE_HEADER          *Variable,
+  IN  ACCESS_VARIABLE_HEADER          * Variable : itype(_Ptr<ACCESS_VARIABLE_HEADER>),
   IN  BOOLEAN                         AuthFormat
   )
 {
-  AUTHENTICATED_VARIABLE_HEADER  *AuthVariable;
+  _Ptr<AUTHENTICATED_VARIABLE_HEADER>  AuthVariable = NULL;
 
-  AuthVariable = (AUTHENTICATED_VARIABLE_HEADER *)Variable;
+  AuthVariable = (_Ptr<AUTHENTICATED_VARIABLE_HEADER>)
+          _Assume_bounds_cast<_Array_ptr<AUTHENTICATED_VARIABLE_HEADER>>(Variable, count(1));
   if (AuthFormat) {
     if ((AuthVariable->State == (UINT8)(-1)) ||
         (AuthVariable->DataSize == (UINT32)(-1)) ||
@@ -177,9 +179,9 @@ GetAccessVariableHeaderSize (
 **/
 CHAR16 *
 GetAccessVariableNamePtr (
-  IN  ACCESS_VARIABLE_HEADER          *Variable,
+  IN  ACCESS_VARIABLE_HEADER*         Variable : itype(_Ptr<ACCESS_VARIABLE_HEADER>),
   IN  BOOLEAN                         AuthFormat
-  )
+  ) : itype(_Ptr<CHAR16>)
 {
   return (CHAR16 *)((UINTN)Variable + GetAccessVariableHeaderSize (AuthFormat));
 }
@@ -196,7 +198,7 @@ GetAccessVariableNamePtr (
 **/
 UINT8 *
 GetAccessVariableDataPtr (
-  IN  ACCESS_VARIABLE_HEADER          *Variable,
+  IN  ACCESS_VARIABLE_HEADER          * Variable :itype(_Ptr<ACCESS_VARIABLE_HEADER>),
   IN  BOOLEAN                         AuthFormat
   )
 {
@@ -222,11 +224,11 @@ GetAccessVariableDataPtr (
   @return                         Pointer to next variable header.
 
 **/
-ACCESS_VARIABLE_HEADER *
+ACCESS_VARIABLE_HEADER*
 GetNextAccessVariablePtr (
-  IN  ACCESS_VARIABLE_HEADER          *Variable,
+  IN  ACCESS_VARIABLE_HEADER*    Variable : itype(_Ptr<ACCESS_VARIABLE_HEADER>),
   IN  BOOLEAN                         AuthFormat
-  )
+  ) : itype(_Ptr<ACCESS_VARIABLE_HEADER>)
 {
   UINTN  Value;
 
@@ -237,7 +239,8 @@ GetNextAccessVariablePtr (
   //
   // Be careful about pad size for alignment.
   //
-  return (ACCESS_VARIABLE_HEADER *)HEADER_ALIGN (Value);
+  return (_Ptr<ACCESS_VARIABLE_HEADER>)
+  _Assume_bounds_cast<_Array_ptr<ACCESS_VARIABLE_HEADER>>(HEADER_ALIGN (Value), count(1));
 }
 
 /**
@@ -248,15 +251,15 @@ GetNextAccessVariablePtr (
   @return                         Pointer to the first variable header.
 
 **/
-ACCESS_VARIABLE_HEADER *
+_Ptr<ACCESS_VARIABLE_HEADER>
 GetAccessStartPointer (
-  IN VARIABLE_STORE_HEADER            *VarStoreHeader
+  IN _Array_ptr<VARIABLE_STORE_HEADER> VarStoreHeader
   )
 {
   //
   // The start of variable store.
   //
-  return (ACCESS_VARIABLE_HEADER *)HEADER_ALIGN (VarStoreHeader + 1);
+  return _Assume_bounds_cast<_Array_ptr<ACCESS_VARIABLE_HEADER>>(HEADER_ALIGN (VarStoreHeader + 1), count(1));
 }
 
 /**
@@ -269,7 +272,7 @@ GetAccessStartPointer (
 
   @return                         Pointer to the end of the variable storage area.
 **/
-ACCESS_VARIABLE_HEADER *
+_Ptr<ACCESS_VARIABLE_HEADER>
 GetAccessEndPointer (
   IN VARIABLE_STORE_HEADER            *VarStoreHeader
   )
@@ -277,7 +280,8 @@ GetAccessEndPointer (
   //
   // The end of variable store
   //
-  return (ACCESS_VARIABLE_HEADER *)HEADER_ALIGN ((UINTN)VarStoreHeader + VarStoreHeader->Size);
+  return (_Ptr<ACCESS_VARIABLE_HEADER>)_Assume_bounds_cast<_Array_ptr<ACCESS_VARIABLE_HEADER>>(
+          HEADER_ALIGN ((UINTN)VarStoreHeader + VarStoreHeader->Size), count(1));
 }
 
 /**
@@ -336,8 +340,8 @@ mineInitNonVolatileVariableStore (
   VOID
   )
 {
-  ACCESS_VARIABLE_HEADER       *Variable;
-  ACCESS_VARIABLE_HEADER       *NextVariable;
+  _Ptr<ACCESS_VARIABLE_HEADER> Variable = NULL;
+  _Ptr<ACCESS_VARIABLE_HEADER> NextVariable = NULL;
   EFI_PHYSICAL_ADDRESS  VariableStoreBase;
   UINTN                 VariableSize;
   EFI_STATUS            Status;
@@ -384,15 +388,16 @@ mineInitNonVolatileVariableStore (
   @return                         A EFI_GUID* pointer to Vendor Guid.
 
 **/
-EFI_GUID *
+_Checked EFI_GUID *
 GetAccessVendorGuidPtr (
-  IN  ACCESS_VARIABLE_HEADER          *Variable,
+  IN  ACCESS_VARIABLE_HEADER          *Variable : itype(_Ptr<ACCESS_VARIABLE_HEADER>),
   IN  BOOLEAN                         AuthFormat
-  )
+  ) : itype(_Ptr<EFI_GUID>)
 {
-  AUTHENTICATED_VARIABLE_HEADER  *AuthVariable;
+  _Ptr<AUTHENTICATED_VARIABLE_HEADER> AuthVariable = NULL;
 
-  AuthVariable = (AUTHENTICATED_VARIABLE_HEADER *)Variable;
+  AuthVariable = (_Ptr<AUTHENTICATED_VARIABLE_HEADER>)
+          _Dynamic_bounds_cast<_Array_ptr<AUTHENTICATED_VARIABLE_HEADER>>(Variable, count(1));
   if (AuthFormat) {
     return &AuthVariable->VendorGuid;
   } else {
@@ -437,8 +442,8 @@ AtRuntime (
 **/
 VOID
 UpdateAccessVariableInfo (
-  IN  CHAR16                          *VariableName,
-  IN  EFI_GUID                        *VendorGuid,
+  IN  _Nt_array_ptr<CHAR16>           VariableName, //add only checked-c pointer to reproduce crash in checked-c
+  IN  _Ptr<EFI_GUID>                  VendorGuid , //add only checked-c pointer to reproduce crash in checked-c
   IN  BOOLEAN                         Volatile,
   IN  BOOLEAN                         Read,
   IN  BOOLEAN                         Write,
@@ -470,13 +475,13 @@ UpdateAccessVariableInfo (
       CopyGuid (&(*VariableInfo)->VendorGuid, VendorGuid);
       (*VariableInfo)->Name = AllocateZeroPool (StrSize (VariableName));
       ASSERT ((*VariableInfo)->Name != NULL);
-      StrCpyS ((*VariableInfo)->Name, StrSize (VariableName)/sizeof (CHAR16), VariableName);
+      StrCpyS ((*VariableInfo)->Name, StrSize (VariableName)/sizeof (CHAR16), (const CHAR16 *)VariableName);
       (*VariableInfo)->Volatile = Volatile;
     }
 
     for (Entry = (*VariableInfo); Entry != NULL; Entry = Entry->Next) {
       if (CompareGuid (VendorGuid, &Entry->VendorGuid)) {
-        if (StrCmp (VariableName, Entry->Name) == 0) {
+        if (StrCmp ((const CHAR16 *)VariableName, Entry->Name) == 0) {
           if (Read) {
             Entry->ReadCount++;
           }
@@ -508,7 +513,7 @@ UpdateAccessVariableInfo (
         CopyGuid (&Entry->Next->VendorGuid, VendorGuid);
         Entry->Next->Name = AllocateZeroPool (StrSize (VariableName));
         ASSERT (Entry->Next->Name != NULL);
-        StrCpyS (Entry->Next->Name, StrSize (VariableName)/sizeof (CHAR16), VariableName);
+        StrCpyS (Entry->Next->Name, StrSize (VariableName)/sizeof (CHAR16), (const CHAR16 *)VariableName);
         Entry->Next->Volatile = Volatile;
       }
     }
@@ -527,8 +532,8 @@ UpdateAccessVariableInfo (
 **/
 BOOLEAN
 AccessVariableCompareTimeStampInternal (
-  IN EFI_TIME  *FirstTime,
-  IN EFI_TIME  *SecondTime
+  IN _Ptr<EFI_TIME>   FirstTime,
+  IN _Ptr<EFI_TIME>   SecondTime
   )
 {
   if (FirstTime->Year != SecondTime->Year) {
@@ -557,14 +562,15 @@ AccessVariableCompareTimeStampInternal (
 **/
 VOID
 SetNameSizeOfAccessVariable (
-  IN ACCESS_VARIABLE_HEADER           *Variable,
+  IN ACCESS_VARIABLE_HEADER*          Variable : itype(_Ptr<ACCESS_VARIABLE_HEADER>),
   IN UINTN                            NameSize,
   IN BOOLEAN                          AuthFormat
   )
 {
-  AUTHENTICATED_VARIABLE_HEADER  *AuthVariable;
+  _Ptr<AUTHENTICATED_VARIABLE_HEADER>   AuthVariable = NULL;
 
-  AuthVariable = (AUTHENTICATED_VARIABLE_HEADER *)Variable;
+  AuthVariable = (_Ptr<AUTHENTICATED_VARIABLE_HEADER>)
+          _Assume_bounds_cast<_Array_ptr<AUTHENTICATED_VARIABLE_HEADER>>(Variable, count(1));
   if (AuthFormat) {
     AuthVariable->NameSize = (UINT32)NameSize;
   } else {
@@ -581,16 +587,17 @@ SetNameSizeOfAccessVariable (
                                   FALSE indicates authenticated variables are not used.
 
 **/
-VOID
+_Checked VOID
 SetDataSizeOfAccessVariable (
-  IN  ACCESS_VARIABLE_HEADER          *Variable,
+  IN  ACCESS_VARIABLE_HEADER          *Variable :itype(_Ptr<ACCESS_VARIABLE_HEADER>),
   IN  UINTN                           DataSize,
   IN  BOOLEAN                         AuthFormat
   )
 {
-  AUTHENTICATED_VARIABLE_HEADER  *AuthVariable;
+  _Ptr<AUTHENTICATED_VARIABLE_HEADER> AuthVariable = NULL;
 
-  AuthVariable = (AUTHENTICATED_VARIABLE_HEADER *)Variable;
+  AuthVariable = (_Ptr<AUTHENTICATED_VARIABLE_HEADER>)
+          _Dynamic_bounds_cast<_Array_ptr<AUTHENTICATED_VARIABLE_HEADER>>(Variable, count(1));
   if (AuthFormat) {
     AuthVariable->DataSize = (UINT32)DataSize;
   } else {
@@ -659,9 +666,9 @@ UpdateAccessVariableStore (
   @return Variable Data offset.
 
 **/
-UINTN
+_Checked UINTN
 GetAccessVariableDataOffset (
-  IN  ACCESS_VARIABLE_HEADER          *Variable,
+  IN  ACCESS_VARIABLE_HEADER          * Variable : itype(_Ptr<ACCESS_VARIABLE_HEADER>),
   IN  BOOLEAN                         AuthFormat
   )
 {
@@ -699,16 +706,16 @@ GetAccessVariableDataOffset (
 **/
 EFI_STATUS
 UpdateAccessVariable (
-  IN      CHAR16                          *VariableName,
-  IN      EFI_GUID                        *VendorGuid,
-  IN      DEMO1_ACCESS_KEY                *AccessKey,
-  IN      VOID                            *Data,
+  IN      _Nt_array_ptr<CHAR16>           VariableName,
+  IN      _Ptr<EFI_GUID>                  VendorGuid,
+  IN      _Ptr<DEMO1_ACCESS_KEY>          AccessKey,
+  IN      _Array_ptr<VOID>                Data : byte_count(DataSize),
   IN      UINTN                           DataSize,
   IN      UINT32                          Attributes      OPTIONAL,
   IN      UINT32                          KeyIndex        OPTIONAL,
   IN      UINT64                          MonotonicCount  OPTIONAL,
-  IN OUT  ACCESS_VARIABLE_POINTER_TRACK   *CacheVariable,
-  IN      EFI_TIME                        *TimeStamp      OPTIONAL
+  IN OUT  _Ptr<ACCESS_VARIABLE_POINTER_TRACK>   CacheVariable,
+  IN      _Ptr<EFI_TIME>                  TimeStamp      OPTIONAL
   )
 {
   EFI_STATUS                          Status;
@@ -721,10 +728,11 @@ UpdateAccessVariable (
   UINTN                               VarSize;
   EFI_FIRMWARE_VOLUME_BLOCK_PROTOCOL  *Fvb;
   UINT8                               State;
-  ACCESS_VARIABLE_POINTER_TRACK       *Variable;
+  _Ptr<ACCESS_VARIABLE_POINTER_TRACK>        Variable = NULL;
   ACCESS_VARIABLE_POINTER_TRACK       NvVariable;
-  VARIABLE_STORE_HEADER               *VariableStoreHeader;
-  UINT8                               *BufferForMerge;
+  _Ptr<VARIABLE_STORE_HEADER>         VariableStoreHeader = NULL;
+  long int _Size = 0;
+  _Array_ptr<UINT8>                   BufferForMerge : byte_count(_Size) = NULL;
   UINTN                               MergedBufSize;
   BOOLEAN                             DataReady;
   UINTN                               DataOffset;
@@ -751,9 +759,10 @@ UpdateAccessVariable (
     // CacheVariable points to the variable in the memory copy of Flash area
     // Now let Variable points to the same variable in Flash area.
     //
-    VariableStoreHeader = (VARIABLE_STORE_HEADER *)((UINTN)mineVariableModuleGlobal->VariableGlobal.NonVolatileVariableBase);
+    VariableStoreHeader = (_Ptr<VARIABLE_STORE_HEADER>)
+            _Assume_bounds_cast<_Array_ptr<VARIABLE_STORE_HEADER>>(((UINTN)mineVariableModuleGlobal->VariableGlobal.NonVolatileVariableBase), count(1));
     Variable            = &NvVariable;
-    Variable->StartPtr  = GetAccessStartPointer (VariableStoreHeader);
+    Variable->StartPtr  = (ACCESS_VARIABLE_HEADER *)GetAccessStartPointer (VariableStoreHeader);
     Variable->EndPtr    = (ACCESS_VARIABLE_HEADER *)((UINTN)Variable->StartPtr + ((UINTN)CacheVariable->EndPtr - (UINTN)CacheVariable->StartPtr));
 
     Variable->CurrPtr = (ACCESS_VARIABLE_HEADER *)((UINTN)Variable->StartPtr + ((UINTN)CacheVariable->CurrPtr - (UINTN)CacheVariable->StartPtr));
@@ -771,7 +780,7 @@ UpdateAccessVariable (
   // Tricky part: Use scratch data area at the end of volatile variable store
   // as a temporary storage.
   //
-  NextVariable = GetAccessEndPointer ((VARIABLE_STORE_HEADER *)((UINTN)mineVariableModuleGlobal->VariableGlobal.NonVolatileVariableBase));
+  NextVariable = (ACCESS_VARIABLE_HEADER *)GetAccessEndPointer ((VARIABLE_STORE_HEADER *)((UINTN)mineVariableModuleGlobal->VariableGlobal.NonVolatileVariableBase));
   ScratchSize  = mineVariableModuleGlobal->ScratchBufferSize;
   SetMem (NextVariable, ScratchSize, 0xff);
   DataReady = FALSE;
@@ -809,11 +818,16 @@ UpdateAccessVariable (
         // From DataOffset of NextVariable is to save the existing variable data.
         //
         DataOffset     = GetAccessVariableDataOffset (CacheVariable->CurrPtr, AuthFormat);
-        BufferForMerge = (UINT8 *)((UINTN)NextVariable + DataOffset);
+        _Bundled{
+            _Size = DataSizeOfAccessVariable (CacheVariable->CurrPtr, AuthFormat);
+            BufferForMerge = NULL;
+        }
+        BufferForMerge =
+                _Assume_bounds_cast<_Array_ptr<UINT8>>(((UINTN)NextVariable + DataOffset), byte_count(_Size));
         CopyMem (
           BufferForMerge,
           (UINT8 *)((UINTN)CacheVariable->CurrPtr + DataOffset),
-          DataSizeOfAccessVariable (CacheVariable->CurrPtr, AuthFormat)
+          _Size
           );
 
         //
@@ -848,8 +862,12 @@ UpdateAccessVariable (
         //
         // BufferForMerge(from DataOffset of NextVariable) has included the merged existing and new data.
         //
-        Data      = BufferForMerge;
-        DataSize  = MergedBufSize;
+
+        Data = _Assume_bounds_cast<_Array_ptr<UINT8>>((BufferForMerge), count(DataSize));
+        _Bundled{
+            DataSize = MergedBufSize;
+            Data = _Assume_bounds_cast<_Array_ptr<UINT8>>((BufferForMerge), count(DataSize));
+        }
         DataReady = TRUE;
       }
 
@@ -932,7 +950,9 @@ UpdateAccessVariable (
 
   VarNameOffset = GetAccessVariableHeaderSize (AuthFormat);
   VarNameSize   = StrSize (VariableName);
-  CopyMem ((UINT8 *)((UINTN)NextVariable + VarNameOffset), VariableName, VarNameSize );
+_Nt_array_ptr<CHAR16> VarName : byte_count (VarNameSize)=
+        _Assume_bounds_cast<_Nt_array_ptr<CHAR16>>(VariableName, byte_count(VarNameSize));
+  CopyMem ((UINT8 *)((UINTN)NextVariable + VarNameOffset), VarName, VarNameSize );
   VarDataOffset = VarNameOffset + VarNameSize + GET_PAD_SIZE (VarNameSize);
 
   //
@@ -1012,10 +1032,10 @@ Done:
 **/
 EFI_STATUS
 FindAccessVariableEx (
-  IN     CHAR16                           *VariableName,
-  IN     EFI_GUID                         *VendorGuid,
+  IN     _Nt_array_ptr<CHAR16>  VariableName,
+  IN     _Ptr<EFI_GUID> VendorGuid,
   IN     BOOLEAN                          IgnoreRtCheck,
-  IN OUT ACCESS_VARIABLE_POINTER_TRACK    *PtrTrack,
+  IN OUT _Ptr<ACCESS_VARIABLE_POINTER_TRACK> PtrTrack,
   IN     BOOLEAN                          AuthFormat
   )
 {
@@ -1051,7 +1071,8 @@ FindAccessVariableEx (
             Point = (VOID *)GetAccessVariableNamePtr (PtrTrack->CurrPtr, AuthFormat);
 
             ASSERT (NameSizeOfAccessVariable (PtrTrack->CurrPtr, AuthFormat) != 0);
-            if (CompareMem (VariableName, Point, NameSizeOfAccessVariable (PtrTrack->CurrPtr, AuthFormat)) == 0) {
+            long int NameSizeOfAccessVariable_Val = NameSizeOfAccessVariable (PtrTrack->CurrPtr, AuthFormat);
+            if (CompareMem (VariableName, Point, NameSizeOfAccessVariable_Val) == 0) {
               if (PtrTrack->CurrPtr->State == (VAR_IN_DELETED_TRANSITION & VAR_ADDED)) {
                 InDeletedVariable = PtrTrack->CurrPtr;
               } else {
@@ -1097,10 +1118,10 @@ FindAccessVariableEx (
 **/
 EFI_STATUS
 FindAccessVariable (
-  IN  CHAR16                          *VariableName,
-  IN  EFI_GUID                        *VendorGuid,
-  OUT ACCESS_VARIABLE_POINTER_TRACK   *PtrTrack,
-  IN  VARIABLE_GLOBAL                 *Global,
+  IN  _Nt_array_ptr<CHAR16>            VariableName, //add only checked-c pointer to reproduce crash in checked-c
+  IN  _Ptr<EFI_GUID>           VendorGuid,//add only checked-c pointer to reproduce crash in checked-c
+  OUT _Ptr<ACCESS_VARIABLE_POINTER_TRACK>    PtrTrack,//add only checked-c pointer to reproduce crash in checked-c
+  IN  _Ptr<VARIABLE_GLOBAL>                  Global,//add only checked-c pointer to reproduce crash in checked-c
   IN  BOOLEAN                         IgnoreRtCheck
   )
 {
@@ -1110,8 +1131,8 @@ FindAccessVariable (
     return EFI_INVALID_PARAMETER;
   }
 
-  PtrTrack->StartPtr = GetAccessStartPointer (mineNvVariableCache);
-  PtrTrack->EndPtr   = GetAccessEndPointer (mineNvVariableCache);
+  PtrTrack->StartPtr = (ACCESS_VARIABLE_HEADER *)GetAccessStartPointer (mineNvVariableCache);
+  PtrTrack->EndPtr   = (ACCESS_VARIABLE_HEADER *)GetAccessEndPointer (mineNvVariableCache);
   PtrTrack->Volatile = FALSE;
 
   Status =  FindAccessVariableEx (VariableName, VendorGuid, IgnoreRtCheck, PtrTrack, mineVariableModuleGlobal->VariableGlobal.AuthFormat);
@@ -1149,17 +1170,17 @@ FindAccessVariable (
 EFI_STATUS
 EFIAPI
 mineVariableServiceSetVariable (
-  IN CHAR16                           *VariableName,
-  IN EFI_GUID                         *VendorGuid,
+  IN CHAR16*                          VariableName : itype(_Nt_array_ptr<CHAR16>),
+  IN EFI_GUID*                        VendorGuid : itype(_Ptr<EFI_GUID>),
   IN UINT32                           Attributes,
-  IN DEMO1_ACCESS_KEY                 *AccessKey,
+  IN DEMO1_ACCESS_KEY*                AccessKey : itype(_Ptr<DEMO1_ACCESS_KEY>),
   IN UINTN                            DataSize,
-  IN VOID                             *Data
+  IN VOID*                            Data : itype(_Array_ptr<VOID>) byte_count(DataSize)
   )
 {
   ACCESS_VARIABLE_POINTER_TRACK   Variable;
   EFI_STATUS                      Status;
-  ACCESS_VARIABLE_HEADER          *NextVariable;
+  _Ptr<ACCESS_VARIABLE_HEADER>    NextVariable = NULL;
   EFI_PHYSICAL_ADDRESS            Point;
   UINTN                           PayloadSize;
   BOOLEAN                         AuthFormat;
@@ -1233,9 +1254,9 @@ mineVariableServiceSetVariable (
 EFI_STATUS
 EFIAPI
 mineVariableServiceGetVariable (
-  IN      CHAR16                      *VariableName,
-  IN      EFI_GUID                    *VendorGuid,
-  OUT     UINT32                      *Attributes OPTIONAL,
+  IN      CHAR16                      *VariableName : itype(_Nt_array_ptr<CHAR16>),
+  IN      EFI_GUID                    *VendorGuid : itype(_Ptr<EFI_GUID>),
+  OUT     UINT32                      *Attributes OPTIONAL ,
   IN      DEMO1_ACCESS_KEY            *AccessKey,
   IN OUT  UINTN                       *DataSize,
   OUT     VOID                        *Data OPTIONAL

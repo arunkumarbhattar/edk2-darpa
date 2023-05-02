@@ -28,7 +28,7 @@ Demo1_Example_App_Entry (
     Print(L"Example App Started\r\n");
 
     /* Create Access Key Storage */
-    DEMO1_ACCESS_KEY *my_access_key=AllocatePool(sizeof(DEMO1_ACCESS_KEY));
+    _Ptr<DEMO1_ACCESS_KEY>  my_access_key=AllocatePool(sizeof(DEMO1_ACCESS_KEY));
 
     /* Locate Access Key Protocol */
     gBS->LocateProtocol(&gDemo1AccessKeyProtocolGuid, NULL, (VOID *)&AccessKeyProtocol);

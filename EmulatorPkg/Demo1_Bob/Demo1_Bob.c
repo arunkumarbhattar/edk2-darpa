@@ -342,7 +342,7 @@ Demo1BobDataProvider(
     return EFI_ACCESS_DENIED;
   }
 
-  if ( IBase + gLoadImage->ImageSize < IAddress + Size ) {
+  if ( IBase + gLoadImage->ImageSize < IAddress + Size ) { //possible integer overflow, if size is large enough (Size + Iaddress) can overflow
     return EFI_ACCESS_DENIED;
   }
 

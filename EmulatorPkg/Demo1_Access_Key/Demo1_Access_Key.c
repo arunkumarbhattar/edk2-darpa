@@ -22,7 +22,7 @@ gDemo1_Access_Key_Protocol = {
 
 // CONSUMED
 EFI_RNG_PROTOCOL  *RngProtocol = NULL;
-DEMO1_ACCESS_KEY *masterKey = NULL;
+_Ptr<DEMO1_ACCESS_KEY>  masterKey = NULL;
 
 // GLOBALS
 BOOLEAN accessKeyLock = FALSE;
@@ -32,13 +32,13 @@ typedef struct _LINK LINK;
 
 struct _LINK { // doubly linked list of keys
   DEMO1_ACCESS_KEY access_key;
-  LINK* _Single next;
-  LINK* _Single prev;
+  _Ptr<LINK> next;
+  _Ptr<LINK> prev;
 };
 
-LINK* _Single head = NULL;
-LINK* _Single last = NULL;
-LINK* _Single keychain=NULL;
+_Ptr<LINK> head = NULL;
+_Ptr<LINK> last = NULL;
+_Ptr<LINK> keychain=NULL;
 
 ///
 /// Utility Functions for keychain
@@ -67,7 +67,7 @@ UINTN KeychainLength (
   )
 {
   UINTN length = 0;
-  LINK* _Single current = NULL;
+  _Ptr<LINK> current = NULL;
   for(current = head; current != NULL; current = current->next){
     length++;
   }
@@ -82,10 +82,10 @@ UINTN KeychainLength (
   @retval VOID
 **/
 void InsertFirst (
-  DEMO1_ACCESS_KEY                    *access_key
+  _Ptr<DEMO1_ACCESS_KEY>                     access_key
   )
 {
-  LINK* _Single link = AllocatePool(sizeof(LINK)); // create a link
+  _Ptr<LINK> link = AllocatePool(sizeof(LINK)); // create a link
   ASSERT (link != NULL);
   CopyMem(&link->access_key, access_key, KEYSIZE);
 
@@ -107,10 +107,10 @@ void InsertFirst (
   @retval VOID
 **/
 VOID InsertLast (
-  DEMO1_ACCESS_KEY                    *access_key
+  _Ptr<DEMO1_ACCESS_KEY>                     access_key
   )
 {
-  LINK* _Single link = AllocatePool(sizeof(LINK)); // create a link
+  _Ptr<LINK> link = AllocatePool(sizeof(LINK)); // create a link
   ASSERT (link != NULL);
   CopyMem(&link->access_key, access_key, KEYSIZE);
 
@@ -133,10 +133,10 @@ VOID InsertLast (
   @retval FALSE                   The key is invalid or does not exist in the chain
 **/
 BOOLEAN DoesKeyExist (
-  DEMO1_ACCESS_KEY                    *access_key
+  _Ptr<DEMO1_ACCESS_KEY>                     access_key
   )
 {
-  LINK* _Single current = NULL;
+  _Ptr<LINK> current = NULL;
   if (access_key == NULL) {
     return FALSE;
   }
@@ -286,7 +286,7 @@ Demo1GenerateAccessKey(
   IN Demo1_Access_Key_PROTOCOL        *This,
   IN EFI_HANDLE                       Controller,
   IN BOOLEAN                          WriteAccess,
-  IN OUT DEMO1_ACCESS_KEY             *AccessKeyPtr // caller provided storage
+  IN OUT _Ptr<DEMO1_ACCESS_KEY>       AccessKeyPtr // caller provided storage
   )
 {
   EFI_STATUS Status = EFI_SUCCESS;
@@ -344,7 +344,7 @@ EFIAPI
 Demo1ValidateAccessKey (
   IN Demo1_Access_Key_PROTOCOL        *This,
   IN EFI_HANDLE                       Controller,
-  IN DEMO1_ACCESS_KEY                 *AccessKeyPtr,
+  IN DEMO1_ACCESS_KEY*                AccessKeyPtr : itype(_Ptr<DEMO1_ACCESS_KEY>),
   IN BOOLEAN                          WriteAccess,
   IN OUT BOOLEAN                      *Result
   )
